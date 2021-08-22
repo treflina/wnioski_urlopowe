@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 load_dotenv()
 
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = os.environ.get("MYSECRET_KEY")
 app.config['MAIL_SERVER']=os.environ.get("MYMAIL_SERVER")
 app.config['MAIL_USERNAME'] = os.environ.get("MYMAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.environ.get("MYMAIL_PASSWORD")
@@ -41,7 +41,8 @@ login_manager.init_app(app)
 
 Bootstrap(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get("DATABASE_URL", "sqlite:///wnioski1.db")
+app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get('DATABASE_URL?sslmode=require').replace('postgres://', 'postgresql://', 'sqlite:///wnioski1.db')
+
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wnioski1.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
