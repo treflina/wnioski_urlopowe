@@ -505,4 +505,4 @@ admin.add_view(MyModelView(Request, db.session))
 admin.add_view(MyModelView(SickLeave, db.session))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
