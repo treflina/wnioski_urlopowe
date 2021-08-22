@@ -12,6 +12,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 import os
 from dotenv import load_dotenv
+from flask_migrate import Migrate
 from flask_mail import Mail, Message
 import re
 
@@ -35,6 +36,7 @@ app.config['MAIL_USE_SSL'] = True
 
 mail=Mail(app)
 
+
 ADMIN_LOGIN=["wynik", "kampa"] # Admin_login also hardcoded in header.html
 
 login_manager = LoginManager()
@@ -53,6 +55,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(session_options={"autoflush": False})
 db = SQLAlchemy(app)
 admin=Admin(app)
+migrate = Migrate(app, db)
+
 
 class Employee(UserMixin, db.Model):
     __tablename__ = "employees"
