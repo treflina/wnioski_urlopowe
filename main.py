@@ -286,11 +286,10 @@ def employees_list():
             for tr in todayr:
                 temporary_list2 = []
                 temporary_list2.append(tr.type)
-                list.append(temporary_list2[0])
                 employee.today_note=temporary_list2[0]
         else:
             employee.today_note = "✓"
-    return render_template("employees_list.html", list=list, request_list=request_list, today_sickleaves=today_sickleaves, today_requests= today_requests, all_employees=all_employees)
+    return render_template("employees_list.html", request_list=request_list, today_sickleaves=today_sickleaves, today_requests= today_requests, all_employees=all_employees)
 
 
 @app.route("/send_request", methods=["POST", "GET"])
