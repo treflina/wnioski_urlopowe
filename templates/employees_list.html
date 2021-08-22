@@ -32,20 +32,8 @@
                 <td class="text-center">{{ employee.contract_end }}</td>
 
 
-<!--                {%for sickleave in today_sickleaves%}-->
-<!--                {%if sickleave.person.name == employee.name%}-->
-<!--                <td class="text-center"> C </td>-->
-<!--                {%endif%}-->
-<!--                {%endfor%}-->
-
-<!--                {%for request in today_requests%}-->
-<!--                {%if request.author.name == employee.name%}-->
-<!--                <td class="text-center present"> {{request.type}} </td>-->
-<!--                {%endif%}-->
-<!--                {%endfor%}-->
-
 <!-- place to inform if an employee is at work today: -->
-                <td> </td>
+                <td>{{ employee.today_note}} </td>
 
                 <td> {{ employee.additional_info }}</td>
             </tr>
