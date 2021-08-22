@@ -123,12 +123,12 @@ class SickLeave(db.Model):
 db.create_all()
 #
 # Create first employee:
-first_employee=Employee(name="Kampa Anna", login="kampa", password=generate_password_hash(
-                "1111",
-                method='pbkdf2:sha256',
-                salt_length=8), position="dyrektor", days_off=26, is_manager="TAK", is_topmanager="TAK", work_time=1.0)
-db.session.add(first_employee)
-db.session.commit()
+# first_employee=Employee(name="Kampa Anna", login="kampa", password=generate_password_hash(
+#                 "1111",
+#                 method='pbkdf2:sha256',
+#                 salt_length=8), position="dyrektor", days_off=26, is_manager="TAK", is_topmanager="TAK", work_time=1.0)
+# db.session.add(first_employee)
+# db.session.commit()
 
 
 @login_manager.user_loader
