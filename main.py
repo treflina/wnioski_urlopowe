@@ -25,16 +25,12 @@ app.config['MAIL_SERVER']=os.environ.get("MYMAIL_SERVER")
 app.config['MAIL_USERNAME'] = os.environ.get("MYMAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.environ.get("MYMAIL_PASSWORD")
 
-# app.config['SECRET_KEY'] = os.getenv("MYSECRET_KEY")
-# app.config['MAIL_SERVER']=os.getenv("MYMAIL_SERVER")
-# app.config['MAIL_USERNAME'] = os.getenv("MYMAIL_USERNAME")
-# app.config['MAIL_PASSWORD'] = os.getenv("MYMAIL_PASSWORD")
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
 
-mail=Mail(app)
+
 
 
 ADMIN_LOGIN=["wynik", "kampa"] # Admin_login also hardcoded in header.html
@@ -42,18 +38,17 @@ ADMIN_LOGIN=["wynik", "kampa"] # Admin_login also hardcoded in header.html
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-Bootstrap(app)
-
 uri = os.getenv("DATABASE_URL", 'sqlite:///wnioski1.db')  # or other relevant config var
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
-# app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get('DATABASE_URL?sslmode=require').replace('postgres://', 'postgresql://', 'sqlite:///wnioski1.db')
 app.config['SQLALCHEMY_DATABASE_URI']=uri
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wnioski1.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(session_options={"autoflush": False})
 db = SQLAlchemy(app)
+Bootstrap(app)
+mail=Mail(app)
 admin=Admin(app)
 migrate = Migrate(app, db)
 
@@ -308,9 +303,13 @@ def send_request():
             substitute=request.form["substitute"]
         except:
             substitute=""
+        if request.form["type"]=="W":
+            work_date=""
+        else:
+            work_date=request.form["work_date"]
         new_request = Request(type=request.form["type"],
                               author=current_user,
-                              work_date=request.form["workdate"],
+                              work_date=work_date,
                               start_date=request.form["startdate"],
                               end_date=request.form["enddate"],
                               substitute=substitute,
