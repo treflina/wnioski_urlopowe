@@ -270,24 +270,24 @@ def employees_list():
     today_requests=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today)
     today_sickleaves=db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(SickLeave.end_date >= today)
 
-    for employee in all_employees:
-        todays=db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(SickLeave.end_date >= today).filter(SickLeave.person_id==employee.id).all()
-        todayr=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today).filter(Request.author_id==employee.id).all()
-
-        if len(todays)!=0:
-            for ts in todays:
-                temporary_lista=[]
-                temporary_lista.append(ts.type)
-                employee.today_note = temporary_lista[0]
-
-        elif len(todayr)!=0:
-            for tr in todayr:
-                temporary_list2 = []
-                temporary_list2.append(tr.type)
-                list.append(temporary_list2[0])
-                employee.today_note=temporary_list2[0]
-        else:
-            employee.today_note = "✓"
+    # for employee in all_employees:
+    #     todays=db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(SickLeave.end_date >= today).filter(SickLeave.person_id==employee.id).all()
+    #     todayr=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today).filter(Request.author_id==employee.id).all()
+    #
+    #     if len(todays)!=0:
+    #         for ts in todays:
+    #             temporary_lista=[]
+    #             temporary_lista.append(ts.type)
+    #             employee.today_note = temporary_lista[0]
+    #
+    #     elif len(todayr)!=0:
+    #         for tr in todayr:
+    #             temporary_list2 = []
+    #             temporary_list2.append(tr.type)
+    #             list.append(temporary_list2[0])
+    #             employee.today_note=temporary_list2[0]
+    #     else:
+    #         employee.today_note = "✓"
     return render_template("employees_list.html", list=list, request_list=request_list, today_sickleaves=today_sickleaves, today_requests= today_requests, all_employees=all_employees)
 
 
