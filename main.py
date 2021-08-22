@@ -12,7 +12,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 import os
 from dotenv import load_dotenv
-# from flask_migrate import Migrate
+from flask_migrate import Migrate
 from flask_mail import Mail, Message
 import re
 
@@ -50,7 +50,7 @@ db = SQLAlchemy(app)
 Bootstrap(app)
 mail=Mail(app)
 admin=Admin(app)
-# migrate = Migrate(app, db)
+migrate = Migrate(app, db)
 
 
 class Employee(UserMixin, db.Model):
