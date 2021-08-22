@@ -1,0 +1,196 @@
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% include 'header.html' %}
+
+<div class="container mt-5">
+    {% if not is_edit: %}
+    <h3>Dodaj pracownika</h3>
+    {% else: %}
+    <h3>Zmień dane pracownika</h3>
+    {% endif %}
+
+    <form method="POST">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-warning">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <div class="row mb-2">
+                <div class="col-lg-3">
+                    {{ form.name.label }}
+                </div>
+                <div class="col-lg-4">
+                    {{ form.name(class="form-control") }}
+                </div>
+            </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.login.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.login(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.email.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.email(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            {% if not is_edit: %}
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.password.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.password(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.position.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.position(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-4">
+                        {{ form.position_info.label }}
+                    </div>
+                    <div class="col-lg-3">
+                        {{ form.position_info(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.work_place.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.work_place(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.manager.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.manager(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.is_manager.label }}
+                    </div>
+                    <div class="col-lg-8 ">
+                        {% for subfield in form.is_manager %}
+                        <tr>
+                            <td>{{ subfield }}</td>
+                            <td>{{ subfield.label }}</td>
+                        </tr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.is_topmanager.label }}
+                    </div>
+                    <div class="col-lg-8 ">
+                        {% for subfield in form.is_topmanager %}
+                        <tr>
+                            <td>{{ subfield }}</td>
+                            <td>{{ subfield.label }}</td>
+                        </tr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.work_time.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.work_time(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.contract_end.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.contract_end(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.days_off.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.days_off(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.annual_days_off.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.annual_days_off(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.additional_info.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.additional_info(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary mr-auto") }}
+            </div>
+
+
+    </form>
+
+
+</div>
+{%include 'footer.html' %}

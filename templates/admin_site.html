@@ -1,0 +1,57 @@
+{% include 'header.html' %}
+<section class="page-section">
+<div class="wnioski">
+    <h3 >Lista pracowników
+        <a href="{{url_for('add_employee')}}" role="button" class="btn ml-3 btn-sm btn-success">Dodaj pracownika</a>
+        <a href="{{url_for('add_sickleave')}}" role="button" class="btn ml-3 btn-sm btn-info">Dodaj zwolnienie lekarskie</a>
+    </h3>
+
+    <table class="table table-sm  js-serial table-responsive">
+        <thead>
+        <tr >
+            <th scope="col">Nazwisko i imię</th>
+
+            <th scope="col">Stanowisko</th>
+            <th scope="col">Bezpośredni przełożony</th>
+            <th scope="col" class="text-center">K*</th>
+            <th scope="col" class="text-center">Urlop</th>
+            <th scope="col" class="text-center">Etat</th>
+            <th scope="col" class="text-center">Miejsce pracy</th>
+             <th scope="col" class="text-center">Umowa do:</th>
+            <th scope="col" class="text-center">Uwagi</th>
+            <th scope="col" class="text-center">Akcja</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        {% for employee in all_employees %}
+        <tr>
+
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{employee.manager.name}}</td>
+            <td class="text-center">{{ employee.is_manager }}</td>
+            <td class="text-center">{{ employee.days_off }}</td>
+            <td class="text-center">{{ employee.work_time }}</td>
+            <td class="text-center">{{ employee.work_place }}</td>
+            <td class="text-center">{{ employee.contract_end }}</td>
+            <td class="text-center">{{ employee.additional_info }}</td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                    <a href="{{url_for('edit_employee', employee_id=employee.id)}}" role="button" class="btn btn-primary">Edytuj</a>
+                    <a href="{{url_for('delete_employee', employee_id=employee.id) }}" role="button" class="btn btn-warning">Usuń</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p>*K - Kierownik placówki/działu (poza jednoosobowymi)</p>
+
+</div>
+</section>
+
+{% include 'footer.html' %}

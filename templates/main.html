@@ -1,0 +1,107 @@
+{% include 'header.html' %}
+
+<div class="container p-3">
+
+    <h3 class="mt-5 mb-5"> Wniosek o udzielenie urlopu/ dnia wolnego</h3>
+       {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <h5 class="text-success">{{ message }}</h5>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    <form action="{{url_for('send_request')}}", method="POST", autocomplete="off">
+        <div class="form-group row">
+            <label for="osoba" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Imię i nazwisko:</label>
+            <div class="col">
+                <input type="text" readonly class="form-control-plaintext" id="osoba" value="{{name_reverse}}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="stanowisko" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Stanowisko:</label>
+            <div class="col-lg-6">
+                <input type="text" readonly class="form-control-plaintext" id="stanowisko" value="{{current_user.position}}">
+            </div>
+        </div>
+        <div>
+            <p class="font-weight-bold">Proszę o:</p>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input active" type="radio" name="type" id="W" value="W"
+                   checked >
+            <label class="form-check-label" for="W"> Urlop wypoczynkowy (W) </label>
+        </div>
+        <div class="form-check">
+            <div class="row">
+                <div class="col">
+                    <input class="form-check-input" type="radio" name="type" id="WS"
+                           value="WS">
+                    <label class="form-check-label" for="WS"> Wolne za pracę w wolną sobotę (WS)<span class="text-danger">*</span> </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-check ">
+            <input class="form-check-input" type="radio" name="type" id="WN" value="WN">
+            <label class="form-check-label" for="WN"> Wolne za pracę w niedzielę/święto (WN)<span class="text-danger">*</span> </label>
+        </div>
+        <div class="form-check ">
+            <input class="form-check-input" type="radio" name="type" id="DW" value="DW">
+            <label class="form-check-label " for="DW"> Wolne za święto przypadające w wolną sobotę
+                (DW) </label>
+        </div>
+        <div class="form-group row Box2">
+            <!-- Date input -->
+            <label class="col-lg-5 col-form-label ">* Praca w sobotę/niedzielę/święto miała miejsce w dniu:</label>
+
+            <input type="text" class="datepicker col-lg-2 input-sm mr-2 ml-2 form-control text-center" name="workdate" />
+
+        </div>
+        <div class="form-group row mt-4">
+            <!-- Date input -->
+            <label class="col-lg-2 col-form-label font-weight-bold">W okresie:</label>
+            <div class="input-daterange input-group col-lg-6 " id="datepicker">
+                <input type="text" class="input-sm form-control mr-2" name="startdate"/>
+                <span class="input-group-addon">do</span>
+                <input type="text" class="input-sm form-control ml-2" name="enddate"/>
+            </div>
+        </div>
+        <div class="form-group row Box">
+            <label for="numberdays" class="col-lg-2 col-md-3 col-form-label font-weight-bold">W wymiarze:</label>
+            <div class="col-lg-1 col-md-2 col-sm-2">
+                <input type="text" class="form-control" id="numberdays" value="" name="days_count">
+            </div>
+            <div class="col">
+                <label class="col-form-label">{% if current_user.work_time<1 %}godzin {%else%}dni roboczych {%endif%}</label>
+            </div>
+        </div>
+        {% if current_user.is_manager=="TAK" %}
+        <div class="form-group row">
+            <label for="zastepstwo" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Zastępstwo:</label>
+            <div class="col">
+                <input type="text" class="form-control" id="zastepstwo" name="substitute" value="" placeholder="Proszę wpisać osobę (jeśli dotyczy)">
+            </div>
+        </div>
+        {% endif %}
+        <div class="form-group row">
+            <label class="col-lg-2 col-md-3 col-form-label font-weight-bold">Wyślij do:</label>
+            <div class="col">
+                <select class="custom-select" name="person_to_send">
+                    <option selected>Wybierz</option>
+                    <option value="{{current_user.manager.name}}">Bezpośredni przełożony</option>
+                    {% for manager in top_management %}
+                    <option value="{{manager.name}}">{{manager.name}}</option>
+                    {%endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col">
+                <button type="submit" class="btn btn-info btn-md float-right mt-3 mr-auto">Złóż wniosek</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+{% include 'footer.html' %}

@@ -1,0 +1,61 @@
+{% include 'header.html' %}
+<section class="page-section">
+    <div class="wnioski">
+        <h3 class="mt-2">Lista pracowników</h3>
+        <div class="row">
+            <input class="form-control col search" id="myInput1" type="text" placeholder="Wyszukaj...">
+        </div>
+        <table class="table js-serial table-responsive empl_table" id="present">
+            <thead>
+            <tr>
+                <th scope="col">Nazwisko i imię</th>
+                <th scope="col">Stanowisko</th>
+                <th scope="col">Miejsce pracy</th>
+                <th scope="col" class="text-center">Etat</th>
+                <th scope="col" class="text-center">Umowa do:</th>
+                <th scope="col" class="text-center">Dziś<span class="text-danger">*</span></th>
+                <th scope="col">Inne</th>
+            </tr>
+            </thead>
+
+            <tbody id="myTable1">
+
+
+
+                {% for employee in all_employees %}
+
+            <tr>
+                <td>{{ employee.name }}</td>
+                <td>{{ employee.position }}</td>
+                <td>{{ employee.work_place}}</td>
+                <td class="text-center">{{ employee.work_time }}</td>
+                <td class="text-center">{{ employee.contract_end }}</td>
+
+
+<!--                {%for sickleave in today_sickleaves%}-->
+<!--                {%if sickleave.person.name == employee.name%}-->
+<!--                <td class="text-center"> C </td>-->
+<!--                {%endif%}-->
+<!--                {%endfor%}-->
+
+<!--                {%for request in today_requests%}-->
+<!--                {%if request.author.name == employee.name%}-->
+<!--                <td class="text-center present"> {{request.type}} </td>-->
+<!--                {%endif%}-->
+<!--                {%endfor%}-->
+
+
+                <td>{{employee.today_note}}</td>
+
+                <td> {{ employee.additional_info }}</td>
+            </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <span class="text-danger">*</span> ✓ - w pracy, W - urlop wypoczynkowy, WS/WN - wolne za pracę w
+        sobotę/niedzielę, DW - wolne za święto przypadające w sobotę
+    </div>
+</section>
+
+{% include 'footer.html' %}

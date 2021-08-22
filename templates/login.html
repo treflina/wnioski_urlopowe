@@ -1,0 +1,51 @@
+{% include 'base.html' %}
+<div class="main">
+        <div class="container_middle">
+<center>
+<div class="middle">
+      <div id="login">
+
+        <form method="post">
+                 {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-danger">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+          <fieldset class="clearfix">
+
+            <p ><span class="fa fa-user"></span><input type="text" name="login"  Placeholder="Nazwa użytkownika" required></p> <!-- JS because of IE support; better: placeholder="Username" -->
+            <p><span class="fa fa-lock"></span><input type="password"  name="password" Placeholder="Hasło" required></p> <!-- JS because of IE support; better: placeholder="Password" -->
+
+             <div>
+                 <span style= "display: inline-block; margin-right:10%"><a class="btn btn-dark" href="{{url_for('change_password')}}" role="button">Zmień hasło</a></span>
+                                <span style="display: inline-block;">
+<button class="btn btn-dark" type="submit">Zaloguj się</button></span>
+                            </div>
+
+          </fieldset>
+<div class="clearfix"></div>
+        </form>
+
+        <div class="clearfix"></div>
+
+      </div> <!-- end login -->
+      <div class="logo"><img src="static/mbp_logo.png">
+
+          <div class="clearfix"></div>
+      </div>
+
+      </div>
+</center>
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

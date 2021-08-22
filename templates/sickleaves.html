@@ -1,0 +1,44 @@
+{% include 'header.html' %}
+<section class="page-section">
+    <div class="container">
+        <h3 >Zwolnienia lekarskie <a href="{{url_for('add_sickleave')}}" role="button" class="btn ml-3 btn-sm btn-info">Dodaj zwolnienie lekarskie</a></h3>
+             {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-warning">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="row">
+            <input class="form-control col search1" id="myInput1" type="text" placeholder="Wyszukaj...">
+        </div>
+        <table class="table js-serial table-responsive empl_table" id="present">
+            <thead>
+            <tr>
+                <th scope="col">Nazwisko i imię</th>
+                <th scope="col" class="text-center">Numer dokumentu</th>
+                <th scope="col" class="text-center">Data wystawienia</th>
+                <th scope="col" class="text-center">Rodzaj</th>
+                <th scope="col" class="text-center">Od:</th>
+                <th scope="col" class="text-center">Do:</th>
+                <th scope="col">Liczba dni</th>
+            </tr>
+            </thead>
+            <tbody id="myTable1">
+                {% for sickleave in sickleaves %}
+            <tr>
+                <td>{{ sickleave.person.name }}</td>
+                <td class="text-center">{{ sickleave.doc_number }}</td>
+                <td class="text-center">{{ sickleave.issue_date}}</td>
+                <td class="text-center">{{ sickleave.type }}</td>
+                <td class="text-center">{{ sickleave.start_date }}</td>
+                <td class="text-center">{{ sickleave.end_date }}</td>
+                <td class="text-center"> {{ sickleave.days }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% include 'footer.html' %}

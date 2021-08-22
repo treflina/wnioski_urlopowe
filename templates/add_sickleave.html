@@ -1,0 +1,110 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% include 'header.html' %}
+
+<div class="container mt-5">
+    <h3>Dodaj zwolnienie lekarskie </h3>
+
+    <p>Uwaga! Przed wprowadzeniem zwolnienia lekarskiego, upewnij się czy na dany okres nie został złożony inny wniosek np. urlopowy. Jeśli tak, skoryguj go w taki sposób, żeby daty się nie pokrywały oraz liczbę dni urlopu do wykorzystania za pomocą ścieżki /admin.</p>
+    <br>
+    <form method="POST">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-warning">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <div class="row mb-2">
+                <div class="col-lg-3">
+                    {{ form.name.label }}
+                </div>
+                <div class="col-lg-4">
+                    {{ form.name(class="form-control") }}
+                </div>
+            </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.doc_number.label }}
+                    </div>
+                    <div class="col-lg-4">
+                        {{ form.doc_number(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.issue_date.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.issue_date(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.type.label }}
+                    </div>
+                    <div class="col-lg-8 ">
+                        {% for subfield in form.type %}
+                        <tr>
+                            <td>{{ subfield }}</td>
+                            <td>{{ subfield.label }}</td>
+                        </tr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.start_date.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.start_date(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+                 <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.end_date.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.end_date(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row mb-2">
+                    <div class="col-lg-3">
+                        {{ form.days.label }}
+                    </div>
+                    <div class="col-lg-2">
+                        {{ form.days(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary mr-auto") }}
+            </div>
+
+
+    </form>
+
+
+</div>
+{%include 'footer.html' %}

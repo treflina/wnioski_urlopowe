@@ -1,0 +1,50 @@
+{% include 'base.html' %}
+<div class="main">
+        <div class="container_middle">
+<center>
+<div class="middle">
+      <div id="login">
+<form action="/change_password" method=post
+      oninput='up2.setCustomValidity(up2.value != up.value ? "Nowe hasło zostało nieprawidłowo powtórzone" : "")'>
+
+
+          <fieldset class="clearfix">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-danger">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+            <p ><span class="fa fa-user"></span><input type="text"  Placeholder="Nazwa użytkownika" required name="login"></p> <!-- JS because of IE support; better: placeholder="Username" -->
+            <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Dotychczasowe hasło" required name=old_password></p>
+            <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Nowe hasło" required name=up></p> <!-- JS because of IE support; better: placeholder="Password" -->
+            <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Powtórz nowe hasło" required name=up2></p>
+             <div>
+            <button class="btn btn-dark" type="submit">Zmień hasło</button></span>
+             </div>
+
+              </fieldset>
+<div class="clearfix"></div>
+</form>
+
+        <div class="clearfix"></div>
+
+      </div> <!-- end login -->
+      <div class="logo"><img src="static/mbp_logo.png">
+
+          <div class="clearfix"></div>
+      </div>
+
+      </div>
+</center>
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
