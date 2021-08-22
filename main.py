@@ -118,17 +118,17 @@ class SickLeave(db.Model):
         return '<SickLeave %r>' %(self.id)
 
 
-# To uncomment during the first use to create director/admin, then add the rest of the users using /admin_site
+# To uncomment after the first use to create director/admin, then add the rest of the users using /admin_site
 
-# db.create_all()
+db.create_all()
 #
-# # Create first employee:
-# first_employee=Employee(name="Kampa Anna", login="kampa", password=generate_password_hash(
-#                 "1111",
-#                 method='pbkdf2:sha256',
-#                 salt_length=8), position="dyrektor", days_off=26, is_manager="TAK", is_topmanager="TAK", work_time=1.0)
-# db.session.add(first_employee)
-# db.session.commit()
+# Create first employee:
+first_employee=Employee(name="Kampa Anna", login="kampa", password=generate_password_hash(
+                "1111",
+                method='pbkdf2:sha256',
+                salt_length=8), position="dyrektor", days_off=26, is_manager="TAK", is_topmanager="TAK", work_time=1.0)
+db.session.add(first_employee)
+db.session.commit()
 
 
 @login_manager.user_loader
