@@ -17,16 +17,21 @@ from flask_mail import Mail, Message
 app = Flask(__name__)
 
 load_dotenv()
-MYSECRET_KEY= os.getenv("MYSECRET_KEY")
-app.config['SECRET_KEY'] = os.getenv("MYSECRET_KEY")
-app.config['MAIL_SERVER']=os.getenv("MYMAIL_SERVER")
-app.config['MAIL_USERNAME'] = os.getenv("MYMAIL_USERNAME")
-app.config['MAIL_PASSWORD'] = os.getenv("MYMAIL_PASSWORD")
+
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['MAIL_SERVER']=os.environ.get("MYMAIL_SERVER")
+app.config['MAIL_USERNAME'] = os.environ.get("MYMAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.environ.get("MYMAIL_PASSWORD")
+
+# app.config['SECRET_KEY'] = os.getenv("MYSECRET_KEY")
+# app.config['MAIL_SERVER']=os.getenv("MYMAIL_SERVER")
+# app.config['MAIL_USERNAME'] = os.getenv("MYMAIL_USERNAME")
+# app.config['MAIL_PASSWORD'] = os.getenv("MYMAIL_PASSWORD")
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
-print(MYSECRET_KEY)
+
 mail=Mail(app)
 
 ADMIN_LOGIN=["wynik", "kampa"] # Admin_login also hardcoded in header.html
@@ -36,7 +41,9 @@ login_manager.init_app(app)
 
 Bootstrap(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wnioski1.db'
+app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get("DATABASE_URL", "sqlite:///wnioski1.db")
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wnioski1.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(session_options={"autoflush": False})
 db = SQLAlchemy(app)
