@@ -139,8 +139,7 @@ def load_user(employee_id):
 def admin_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        admin_logins=["treflina", "kampa"]
-        if current_user.login not in admin_logins:
+        if current_user.login not in ADMIN_LOGIN:
             return abort(403)
         return f(*args, **kwargs)
 
