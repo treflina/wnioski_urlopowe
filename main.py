@@ -13,6 +13,7 @@ from flask_admin.contrib.sqla import ModelView
 import os
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
+import re
 
 app = Flask(__name__)
 
@@ -41,8 +42,11 @@ login_manager.init_app(app)
 
 Bootstrap(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get('DATABASE_URL?sslmode=require').replace('postgres://', 'postgresql://', 'sqlite:///wnioski1.db')
-
+uri = os.getenv("DATABASE_URL", 'sqlite:///wnioski1.db')  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+# app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get('DATABASE_URL?sslmode=require').replace('postgres://', 'postgresql://', 'sqlite:///wnioski1.db')
+app.config['SQLALCHEMY_DATABASE_URI']=uri
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wnioski1.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
