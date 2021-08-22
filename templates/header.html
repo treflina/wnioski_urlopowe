@@ -27,7 +27,7 @@
     <div class="container-fluid">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark">
 
-        <a href="#" class="navbar-brand ml-1" id="nav_urlop"><img src="/static/mbp_logo.png" class="d-inline-block align-center"  style="padding-right: 15px;">{%if current_user.is_authenticated%} Zostało Ci {{current_user.days_off}} {% if current_user.work_time<1 %}godz. {%else%} dni  {%endif%}urlopu 🌴 {%endif%}
+        <a href="{{url_for('main')}}" class="navbar-brand ml-1" id="nav_urlop"><img src="/static/mbp_logo.png" class="d-inline-block align-center"  style="padding-right: 15px;">{%if current_user.is_authenticated%} Zostało Ci {{current_user.days_off}} {% if current_user.work_time<1 %}godz. {%else%} dni  {%endif%}urlopu 🌴 {%endif%}
             </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -43,6 +43,7 @@
                 <a class="nav-link " href="{{url_for('my_requests')}}">Twoje wnioski</a>
             </li>
             {% endif %}
+            {% if current_user.is_manager == "TAK" %}
               <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="{{url_for('employees_requests')}}" id="navbardrop" data-toggle="dropdown">
         Wnioski pracowników
@@ -70,7 +71,7 @@
         <a class="dropdown-item" href="employees_requests#saturday">Wolne za soboty</a>
       </div>
     </li>
-
+{% endif %}
             {% if current_user.position == "dyrektor" %}
                        <li class="nav-item">
                 <a class="nav-link " href="{{url_for('sickleaves')}}">Zwolnienia lekarskie</a>

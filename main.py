@@ -211,9 +211,8 @@ def main():
         today_sickleaves = db.session.query(SickLeave).filter(SickLeave.start_date >= today).filter(
             SickLeave.end_date <= today).all()
         today_requests = db.session.query(Request).filter(Request.start_date >= today).filter(Request.end_date <= today).all()
-        print(today_requests)
-        print(today_sickleaves)
         if current_user.position=="dyrektor":
+
             return redirect(url_for('employees_list', request_list=request_list, today_sickleaves=today_sickleaves, today_requests=today_requests))
         else:
             return render_template("main.html", name_reverse=name_reverse, top_management=top_management, request_list=request_list)
@@ -305,7 +304,7 @@ def send_request():
         if request.form["type"]=="W":
             work_date=""
         else:
-            work_date=request.form["work_date"]
+            work_date=request.form["workdate"]
         new_request = Request(type=request.form["type"],
                               author=current_user,
                               work_date=work_date,
@@ -322,6 +321,15 @@ def send_request():
             employee_to_update.days_off = new_days_off_count
         db.session.add(new_request)
         db.session.commit()
+        manager_send=Employee.query.filter_by(name=request.form["person_to_send"]).first()
+        try:
+            msg = Message(f" {current_user.name} prosi o akceptację wniosku ({request.form['startdate']}- {request.form['enddate']})",
+                          sender='treflina@yahoo.com', recipients=[manager_send.email])
+            msg.body = f" {current_user.name} prosi o akceptację wniosku o wolne ({request.form['type']}) w okresie {request.form['startdate']} - {request.form['enddate']}.\r\n \r\nWiadomość wygenerowana automatycznie."
+            mail.send(msg)
+        except:
+            pass
+
         flash('Twój wniosek został pomyślnie złożony.')
     return redirect(url_for("main"))
 
@@ -334,7 +342,7 @@ def accept_request(request_id, manager_id):
     person_who_signed = Employee.query.get(manager_id).name
     request_to_accept.signed_by = person_who_signed
     db.session.commit()
-    return redirect(url_for('main'))
+    return redirect(url_for('employees_requests'))
 
 
 @app.route("/reject_request/<int:request_id>/<int:manager_id>")

@@ -86,4 +86,7 @@ $(document).ready(function(){
   });
 });
 
-//$("#present td:contains('None')").eq(6).html("braki");
+//$("#wnioski_table td:contains('None')").text("");
+//$("#wnioski_table td").text(function () {
+//    return $(this).text().replace("None", " ");
+//});

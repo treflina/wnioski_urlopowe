@@ -8,7 +8,7 @@
 <div class="wnioski" >
 
 <h4 >Wnioski otrzymane do zaopiniowania</h4>
-        <table class="table js-serial table-responsive ">
+        <table class="table js-serial table-responsive" id="wnioski_table">
             <thead>
             <tr>
 
@@ -39,6 +39,7 @@
                 <td>{{request.work_date}}</td>
                 <td>{{request.substitute}}</td>
                 <td>{{request.status}}</td>
+
                 {% if request.status=="oczekujący" %}
                 <td>
                     <div class="btn-group btn-group-sm">
@@ -129,7 +130,7 @@
             {%else%}
                  <tbody id="myTable3">
             {% for request in employees_requests_holiday %}
-
+            {% if request.author.name != current_user.name %}
             <tr>
 
                 <td>{{request.send_date}}</td>
@@ -151,7 +152,7 @@
                  <td>przez {{request.signed_by}}</td>
                 {% endif %}
             </tr>
-
+            {% endif%}
             {% endfor %}
             </tbody>
             {%endif%}
@@ -221,7 +222,7 @@
             {%else %}
              <tbody id="myTable4">
             {% for request in employees_requests_others %}
-
+            {% if request.author.name != current_user.name %}
             <tr>
 
                 <td class="search">{{request.send_date}}</td>
@@ -230,7 +231,7 @@
                 <td class="search">{{request.start_date}}</td>
                 <td class="search">{{request.end_date}}</td>
                 <td class="text-center">{{request.type}}</td>
-                <td>{{request.work_date}}</td>
+                <td class="text-center">{{request.work_date}}</td>
                 <td>{{request.substitute}}</td>
                 <td class="search">{{request.status}}</td>
                 {% if request.status=="oczekujący" %}
@@ -244,7 +245,7 @@
                 <td>przez {{request.signed_by}}</td>
                 {% endif %}
             </tr>
-
+            {%endif%}
             {% endfor %}
             </tbody>
             {%endif%}
