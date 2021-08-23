@@ -246,6 +246,15 @@ def employees_requests():
     return render_template("employees_requests.html",  employees_requests_received= employees_requests_received, employees_requests_holiday=employees_requests_holiday,
                            employees_requests_others=employees_requests_others, request_list=request_list)
 
+@app.route("/requests_all")
+@admin_only
+def requests_all():
+    employees_requests_others = db.session.query(Request).filter(
+        (Request.type == 'WS') | (Request.type == 'WN') | (Request.type == "DW")).order_by(desc(Request.send_date)).all()
+    employees_requests_holiday = db.session.query(Request).filter(Request.type == "W").order_by(desc(Request.send_date)).all()
+    return render_template("requests_all.html",  employees_requests_holiday=employees_requests_holiday,
+                           employees_requests_others=employees_requests_others)
+
 @app.route("/sickleaves")
 @login_required
 def sickleaves():

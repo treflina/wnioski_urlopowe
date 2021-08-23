@@ -1,0 +1,116 @@
+{% include 'header.html' %}
+
+
+<section class="page-section" id="holiday">
+    <br>
+    <br>
+    <div class="wnioski" >
+<br>
+        <h4 >Wnioski urlopowe pracowników</h4>
+        <div class="row">
+    <input class="form-control col search" id="myInput1" type="text" placeholder="Wyszukaj...">
+            </div>
+        <table class="table js-serial table-responsive ">
+            <thead>
+            <tr>
+
+                <th scope="col">Data złożenia</th>
+                <th scope="col">Nazwisko i imię</th>
+                <th scope="col">Stanowisko</th>
+                <th class="text-center" scope="col">Od</th>
+                <th class="text-center" scope="col">Do</th>
+                <th scope="col">Liczba dni<span class="text-danger">*</span></th>
+                <th scope="col">Zastępuje</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody id="myTable1">
+            {% for request in employees_requests_holiday %}
+            <tr>
+
+                <td>{{request.send_date}}</td>
+                <td>{{request.author.name}}</td>
+                <td>{{request.author.position}}</td>
+                <td>{{request.start_date}}</td>
+                <td>{{request.end_date}}</td>
+                <td class="text-center">{{request.days}}</td>
+                <td>{{request.substitute}}</td>
+                <td>{{request.status}}</td>
+                {% if request.status=="oczekujący" %}
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{url_for('accept_request', manager_id=current_user.id, request_id=request.id)}}" role="button" class="btn btn-success mr-1  ">Zaakceptuj</a>
+                        <a href="{{url_for('reject_request', manager_id=current_user.id, request_id=request.id)}}" role="button" class="btn btn-danger">Odrzuć</a>
+                    </div>
+                </td>
+                {%else%}
+                 <td>przez {{request.signed_by}}</td>
+                {% endif %}
+            </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </section>
+
+<section class="page-section" id="saturday">
+    <br>
+    <br>
+    <div class="wnioski" >
+
+        <h4 >Wnioski pracowników o dni wolne za pracę w soboty/niedziele, inne</h4>
+        <div class="row">
+<input class="form-control col search" id="myInput2" type="text" placeholder="Wyszukaj...">
+        </div>
+        <table class="table js-serial table-responsive">
+            <thead>
+            <tr>
+
+                <th scope="col">Data złożenia</th>
+                <th scope="col">Nazwisko i imię</th>
+                <th scope="col">Stanowisko</th>
+                <th class="text-center" scope="col">Od</th>
+                <th class="text-center" scope="col">Do</th>
+                <th scope="col">Rodzaj</th>
+                <th scope="col">Za pracę dnia</th>
+                <th scope="col">Zastępuje</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody id="myTable2">
+            {% for request in employees_requests_others %}
+
+            <tr>
+
+                <td class="search">{{request.send_date}}</td>
+                <td>{{request.author.name}}</td>
+                <td>{{request.author.position}}</td>
+                <td class="search">{{request.start_date}}</td>
+                <td class="search">{{request.end_date}}</td>
+                <td class="text-center">{{request.type}}</td>
+                <td>{{request.work_date}}</td>
+                <td>{{request.substitute}}</td>
+                <td class="search">{{request.status}}</td>
+                {% if request.status=="oczekujący" %}
+                <td id="action_others">
+                    <div class="btn-group btn-group-sm">
+                         <a href="{{url_for('accept_request', manager_id=current_user.id, request_id=request.id)}}" role="button" class="btn btn-success mr-1  ">Zaakceptuj</a>
+                        <a href="{{url_for('reject_request', manager_id=current_user.id, request_id=request.id)}}" role="button" class="btn btn-danger">Odrzuć</a>
+                    </div>
+                </td>
+                {% else %}
+                <td>przez {{request.signed_by}}</td>
+                {% endif %}
+            </tr>
+
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+    </section>
+{% include 'footer.html' %}
