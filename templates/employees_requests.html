@@ -102,7 +102,7 @@
             {% if not current_user.is_topmanager %}
             <tbody id="myTable1">
             {% for request in employees_requests_holiday %}
-            {% if request.author.manager.name == current_user.name %}
+            {% if request.author.manager.name == current_user.name%}
             <tr>
 
                 <td>{{request.send_date}}</td>

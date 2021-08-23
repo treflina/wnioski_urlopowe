@@ -33,7 +33,7 @@ app.config['MAIL_USE_SSL'] = True
 
 
 
-ADMIN_LOGIN=["wynik", "kampa"] # Admin_login also hardcoded in header.html
+ADMIN_LOGIN=["wynik", "kampa", "kostek"] # Admin_login also hardcoded in header.html
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -274,13 +274,14 @@ def employees_list():
 
     for employee in all_employees:
         todays=db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(SickLeave.end_date >= today).filter(SickLeave.person_id==employee.id).all()
-        todayr=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today).filter(Request.author_id==employee.id).all()
+        todayr=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today).filter(Request.status!="odrzucony").filter(Request.author_id==employee.id).all()
 
         if len(todays)!=0:
-            for ts in todays:
-                temporary_lista=[]
-                temporary_lista.append(ts.type)
-                employee.today_note = temporary_lista[0]
+            employee.today_note = "C"
+            # for ts in todays:
+            #     temporary_lista=[]
+            #     temporary_lista.append(ts.type)
+            #     employee.today_note = temporary_lista[0]
 
         elif len(todayr)!=0:
             for tr in todayr:
