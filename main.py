@@ -305,13 +305,17 @@ def send_request():
             work_date=""
         else:
             work_date=request.form["workdate"]
+        if not request.form["days_count"] or request.form["days_count"]<1:
+            days=0
+        else:
+            days=request.form["days_count"]
         new_request = Request(type=request.form["type"],
                               author=current_user,
                               work_date=work_date,
                               start_date=request.form["startdate"],
                               end_date=request.form["enddate"],
                               substitute=substitute,
-                              days=request.form["days_count"],
+                              days=days,
                               status="oczekujący",
                               send_date=date.today().strftime("%d/%m/%y"),
                               send_to_person=request.form["person_to_send"])
