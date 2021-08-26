@@ -12,7 +12,7 @@ from io import BytesIO
 
 stylesheet = getSampleStyleSheet()
 
-pdfmetrics.registerFont(TTFont('Arial', 'Arial.ttf'))
+
 pdfmetrics.registerFont(TTFont('TNR', 'times.ttf'))
 pdfmetrics.registerFont(TTFont('TNRB', 'timesbd.ttf'))
 
