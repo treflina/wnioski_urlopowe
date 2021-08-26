@@ -33,3 +33,10 @@ class SickLeaveForm(FlaskForm):
     end_date = StringField("Do (DD/MM/YY):", validators=[DataRequired()])
     days = StringField("Liczba dni")
     submit = SubmitField("Zatwierdź")
+
+class ReportForm(FlaskForm):
+    person=SelectField("Dla:", choices=[("Kowalska Anna","Kowalska Anna")], validators=[DataRequired()])
+    type = SelectField ("Rodzaj:", choices = [("o urlop wypoczynkowy", "urlop wypoczynkowy"), ("o dni wolne", "pozostałe (WS, WN, WŚ)")])
+    start_date = StringField ("Od (dd/mm/yy):", validators=[DataRequired()])
+    end_date = StringField("Do (dd/mm/yy):", validators=[DataRequired()])
+    submit = SubmitField("Generuj pdf")

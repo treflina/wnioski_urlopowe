@@ -7,21 +7,24 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
 from sqlalchemy.orm import relationship
 from functools import wraps
-from forms import EditEmployeeForm, SickLeaveForm
+
+from flask.helpers import send_file
+from forms import EditEmployeeForm, SickLeaveForm, ReportForm
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 import os
+from io import BytesIO
 from dotenv import load_dotenv
 from flask_migrate import Migrate
 from flask_mail import Mail, Message
-import re
+from pdf_creator import create_pdf
 
 app = Flask(__name__)
 
 load_dotenv()
 
 app.config['SECRET_KEY'] = os.environ.get("MYSECRET_KEY")
-app.config['MAIL_SERVER']=os.environ.get("MYMAIL_SERVER")
+app.config['MAIL_SERVER'] = os.environ.get("MYMAIL_SERVER")
 app.config['MAIL_USERNAME'] = os.environ.get("MYMAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.environ.get("MYMAIL_PASSWORD")
 
@@ -29,11 +32,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
-
-
-
-
-ADMIN_LOGIN=["wynik", "kampa", "kostek"] # Admin_login also hardcoded in header.html
+ADMIN_LOGIN = ["wynik", "kampa", "kostek"]  # Admin_login also hardcoded in header.html
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -41,15 +40,15 @@ login_manager.init_app(app)
 uri = os.getenv("DATABASE_URL", 'sqlite:///wnioski1.db')  # or other relevant config var
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
-app.config['SQLALCHEMY_DATABASE_URI']=uri
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wnioski1.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(session_options={"autoflush": False})
 db = SQLAlchemy(app)
 Bootstrap(app)
-mail=Mail(app)
-admin=Admin(app)
+mail = Mail(app)
+admin = Admin(app)
 migrate = Migrate(app, db)
 
 
@@ -60,24 +59,25 @@ class Employee(UserMixin, db.Model):
     login = db.Column(db.String(10), unique=True, nullable=False)
     password = db.Column(db.String(100))
     position = db.Column(db.String(50), unique=False)
-    position_info=db.Column(db.String(20))
-    work_place=db.Column(db.String)
+    position_info = db.Column(db.String(20))
+    work_place = db.Column(db.String)
     is_manager = db.Column(db.String(3), nullable=False)
     is_topmanager = db.Column(db.String(3), nullable=False)
     work_time = db.Column(db.Float, unique=False, nullable=False)
-    email=db.Column(db.String)
+    email = db.Column(db.String)
     days_off = db.Column(db.Integer, nullable=False)
-    annual_days_off=db.Column(db.Integer)
+    annual_days_off = db.Column(db.Integer)
     contract_end = db.Column(db.String)
     requests = relationship("Request", back_populates="author")
     sickleaves = relationship("SickLeave", back_populates="person")
     manager_id = db.Column(db.Integer, db.ForeignKey("employees.id"))
     manager = relationship("Employee", backref='subordinates', remote_side="Employee.id")
-    today_note=db.Column(db.String(20))
-    additional_info=db.Column(db.String)
+    today_note = db.Column(db.String(20))
+    additional_info = db.Column(db.String)
 
     def __repr__(self):
-        return '<Employee %r>' %(self.name)
+        return '<Employee %r>' % (self.name)
+
 
 class MyModelView(ModelView):
     def is_accessible(self):
@@ -100,8 +100,10 @@ class Request(db.Model):
     substitute = db.Column(db.String(50), nullable=True)
     send_to_person = db.Column(db.String(50))
     signed_by = db.Column(db.String(50))
+
     def __repr__(self):
-        return '<Request %r>' %(self.id)
+        return '<Request %r>' % (self.id)
+
 
 class SickLeave(db.Model):
     __tablename__ = "sickleaves"
@@ -114,13 +116,16 @@ class SickLeave(db.Model):
     start_date = db.Column(db.String(250), nullable=False)
     end_date = db.Column(db.String(250), nullable=False)
     days = db.Column(db.Integer)
+
     def __repr__(self):
-        return '<SickLeave %r>' %(self.id)
+        return '<SickLeave %r>' % (self.id)
 
 
 # To uncomment after the first use to create director/admin, then add the rest of the users using /admin_site
 
 db.create_all()
+
+
 #
 # Create first employee:
 # first_employee=Employee(name="Kampa Anna", login="kampa", password=generate_password_hash(
@@ -166,7 +171,6 @@ def login():
     return render_template("login.html")
 
 
-
 @app.route("/change_password", methods=["POST", "GET"])
 def change_password():
     if request.method == "POST":
@@ -197,10 +201,10 @@ def change_password():
 @app.route("/", methods=["GET"])
 def main():
     if current_user.is_authenticated:
-        name_split=current_user.name.split(" ")
-        name_reverse=name_split[1]+" "+name_split[0]
+        name_split = current_user.name.split(" ")
+        name_reverse = name_split[1] + " " + name_split[0]
 
-        top_management = db.session.query(Employee).filter(Employee.is_topmanager=="TAK").all()
+        top_management = db.session.query(Employee).filter(Employee.is_topmanager == "TAK").all()
 
         employee_to_search = Employee.query.get(current_user.id)
         employees_requests_received = db.session.query(Request).filter(
@@ -210,14 +214,16 @@ def main():
         today = date.today().strftime("%d/%m/%y")
         today_sickleaves = db.session.query(SickLeave).filter(SickLeave.start_date >= today).filter(
             SickLeave.end_date <= today).all()
-        today_requests = db.session.query(Request).filter(Request.start_date >= today).filter(Request.end_date <= today).all()
-        if current_user.position=="dyrektor":
+        today_requests = db.session.query(Request).filter(Request.start_date >= today).filter(
+            Request.end_date <= today).all()
+        if current_user.position == "dyrektor":
 
-            return redirect(url_for('employees_list', request_list=request_list, today_sickleaves=today_sickleaves, today_requests=today_requests))
+            return redirect(url_for('employees_list', request_list=request_list, today_sickleaves=today_sickleaves,
+                                    today_requests=today_requests))
         else:
-            return render_template("main.html", name_reverse=name_reverse, top_management=top_management, request_list=request_list)
+            return render_template("main.html", name_reverse=name_reverse, top_management=top_management,
+                                   request_list=request_list)
     return redirect(url_for('login'))
-
 
 
 @app.route("/my_requests")
@@ -229,7 +235,8 @@ def my_requests():
     user_requests_others = db.session.query(Request).filter(
         (Request.type == 'WS') | (Request.type == 'WN') | (Request.type == "DW")).filter(
         Request.author_id == current_user.id).order_by(desc(Request.send_date)).all()
-    return render_template("my_requests.html", user_requests_holiday=user_requests_holiday,user_requests_others=user_requests_others)
+    return render_template("my_requests.html", user_requests_holiday=user_requests_holiday,
+                           user_requests_others=user_requests_others)
 
 
 @app.route("/employees_requests")
@@ -237,23 +244,30 @@ def my_requests():
 def employees_requests():
     employee_to_search = Employee.query.get(current_user.id)
 
-    employees_requests_received=db.session.query(Request).filter(
-        Request.send_to_person == employee_to_search.name).filter(Request.status=="oczekujący")
+    employees_requests_received = db.session.query(Request).filter(
+        Request.send_to_person == employee_to_search.name).filter(Request.status == "oczekujący")
     employees_requests_others = db.session.query(Request).filter(
-        (Request.type == 'WS') | (Request.type == 'WN') | (Request.type == "DW")).order_by(desc(Request.send_date)).all()
-    employees_requests_holiday = db.session.query(Request).filter(Request.type == "W").order_by(desc(Request.send_date)).all()
-    request_list=len(employees_requests_received.all())
-    return render_template("employees_requests.html",  employees_requests_received= employees_requests_received, employees_requests_holiday=employees_requests_holiday,
+        (Request.type == 'WS') | (Request.type == 'WN') | (Request.type == "DW")).order_by(
+        desc(Request.send_date)).all()
+    employees_requests_holiday = db.session.query(Request).filter(Request.type == "W").order_by(
+        desc(Request.send_date)).all()
+    request_list = len(employees_requests_received.all())
+    return render_template("employees_requests.html", employees_requests_received=employees_requests_received,
+                           employees_requests_holiday=employees_requests_holiday,
                            employees_requests_others=employees_requests_others, request_list=request_list)
+
 
 @app.route("/requests_all")
 @admin_only
 def requests_all():
     employees_requests_others = db.session.query(Request).filter(
-        (Request.type == 'WS') | (Request.type == 'WN') | (Request.type == "DW")).order_by(desc(Request.send_date)).all()
-    employees_requests_holiday = db.session.query(Request).filter(Request.type == "W").order_by(desc(Request.send_date)).all()
-    return render_template("requests_all.html",  employees_requests_holiday=employees_requests_holiday,
+        (Request.type == 'WS') | (Request.type == 'WN') | (Request.type == "DW")).order_by(
+        desc(Request.send_date)).all()
+    employees_requests_holiday = db.session.query(Request).filter(Request.type == "W").order_by(
+        desc(Request.send_date)).all()
+    return render_template("requests_all.html", employees_requests_holiday=employees_requests_holiday,
                            employees_requests_others=employees_requests_others)
+
 
 @app.route("/sickleaves")
 @login_required
@@ -261,11 +275,13 @@ def sickleaves():
     sickleaves = SickLeave.query.order_by(SickLeave.issue_date).all()
     return render_template("sickleaves.html", sickleaves=sickleaves)
 
+
 @app.route("/admin_site", methods=["POST", "GET"])
 @admin_only
 def admin_site():
     all_employees = Employee.query.order_by(Employee.name).all()
     return render_template("admin_site.html", all_employees=all_employees)
+
 
 @app.route("/employees_list")
 @login_required
@@ -277,29 +293,33 @@ def employees_list():
         Request.send_to_person == employee_to_search.name).filter(Request.status == "oczekujący")
     request_list = len(employees_requests_received.all())
 
-    today=date.today().strftime("%d/%m/%y")
-    today_requests=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today)
-    today_sickleaves=db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(SickLeave.end_date >= today)
+    today = date.today().strftime("%d/%m/%y")
+    today_requests = db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today)
+    today_sickleaves = db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(
+        SickLeave.end_date >= today)
 
     for employee in all_employees:
-        todays=db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(SickLeave.end_date >= today).filter(SickLeave.person_id==employee.id).all()
-        todayr=db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today).filter(Request.status!="odrzucony").filter(Request.author_id==employee.id).all()
+        todays = db.session.query(SickLeave).filter(SickLeave.start_date <= today).filter(
+            SickLeave.end_date >= today).filter(SickLeave.person_id == employee.id).all()
+        todayr = db.session.query(Request).filter(Request.start_date <= today).filter(Request.end_date >= today).filter(
+            Request.status != "odrzucony").filter(Request.author_id == employee.id).all()
 
-        if len(todays)!=0:
+        if len(todays) != 0:
             employee.today_note = "C"
             # for ts in todays:
             #     temporary_lista=[]
             #     temporary_lista.append(ts.type)
             #     employee.today_note = temporary_lista[0]
 
-        elif len(todayr)!=0:
+        elif len(todayr) != 0:
             for tr in todayr:
                 temporary_list2 = []
                 temporary_list2.append(tr.type)
-                employee.today_note=temporary_list2[0]
+                employee.today_note = temporary_list2[0]
         else:
             employee.today_note = "✓"
-    return render_template("employees_list.html", request_list=request_list, today_sickleaves=today_sickleaves, today_requests= today_requests, all_employees=all_employees)
+    return render_template("employees_list.html", request_list=request_list, today_sickleaves=today_sickleaves,
+                           today_requests=today_requests, all_employees=all_employees)
 
 
 @app.route("/send_request", methods=["POST", "GET"])
@@ -307,17 +327,17 @@ def employees_list():
 def send_request():
     if request.method == "POST":
         try:
-            substitute=request.form["substitute"]
+            substitute = request.form["substitute"]
         except:
-            substitute=""
-        if request.form["type"]=="W":
-            work_date=""
+            substitute = ""
+        if request.form["type"] == "W":
+            work_date = ""
         else:
-            work_date=request.form["workdate"]
-        if not request.form["days_count"] or request.form["days_count"]<1:
-            days=0
+            work_date = request.form["workdate"]
+        if not request.form["days_count"] or request.form["days_count"] < 1:
+            days = 0
         else:
-            days=request.form["days_count"]
+            days = request.form["days_count"]
         new_request = Request(type=request.form["type"],
                               author=current_user,
                               work_date=work_date,
@@ -334,10 +354,11 @@ def send_request():
             employee_to_update.days_off = new_days_off_count
         db.session.add(new_request)
         db.session.commit()
-        manager_send=Employee.query.filter_by(name=request.form["person_to_send"]).first()
+        manager_send = Employee.query.filter_by(name=request.form["person_to_send"]).first()
         try:
-            msg = Message(f" {current_user.name} prosi o akceptację wniosku ({request.form['startdate']}- {request.form['enddate']})",
-                          sender='treflina@yahoo.com', recipients=[manager_send.email])
+            msg = Message(
+                f" {current_user.name} prosi o akceptację wniosku ({request.form['startdate']}- {request.form['enddate']})",
+                sender='treflina@yahoo.com', recipients=[manager_send.email])
             msg.body = f" {current_user.name} prosi o akceptację wniosku o wolne ({request.form['type']}) w okresie {request.form['startdate']} - {request.form['enddate']}.\r\n \r\nWiadomość wygenerowana automatycznie."
             mail.send(msg)
         except:
@@ -372,10 +393,11 @@ def reject_request(request_id, manager_id):
     db.session.commit()
     return redirect(url_for('employees_requests'))
 
+
 @app.route("/withdraw_request/<int:request_id>")
 @login_required
 def withdraw_request(request_id):
-    request_to_withdraw=Request.query.get(request_id)
+    request_to_withdraw = Request.query.get(request_id)
     if request_to_withdraw.type == "W":
         employee_to_update = Employee.query.get(request_to_withdraw.author.id)
         new_days_off_count = employee_to_update.days_off + request_to_withdraw.days
@@ -391,7 +413,7 @@ def add_employee():
     is_edit = False
     form = EditEmployeeForm()
     form.manager.choices = [(g.id, g.name) for g in Employee.query.filter_by(is_manager="TAK").order_by('name').all()]
-    if request.method == "POST":
+    if form.validate_on_submit():
         try:
             work_time = request.form["work_time"].replace(",", ".")
         except:
@@ -413,13 +435,17 @@ def add_employee():
             new_employee = Employee(name=request.form["name"], login=request.form["login"], email=request.form["email"],
                                     password=hash_and_salted_password, days_off=request.form["days_off"],
                                     work_time=work_time, work_place=request.form["work_place"],
-                                    position=request.form["position"], position_info=request.form["position_info"], is_manager=request.form["is_manager"],
-                                    is_topmanager=request.form["is_topmanager"],contract_end=request.form["contract_end"], manager_id=manager_id, additional_info=request.form["additional_info"])
+                                    position=request.form["position"], position_info=request.form["position_info"],
+                                    is_manager=request.form["is_manager"],
+                                    is_topmanager=request.form["is_topmanager"],
+                                    contract_end=request.form["contract_end"], manager_id=manager_id,
+                                    additional_info=request.form["additional_info"])
             db.session.add(new_employee)
             db.session.commit()
             all_employees = db.session.query(Employee).all()
             return redirect(url_for('admin_site', all_employees=all_employees))
     return render_template("edit.html", is_edit=is_edit, form=form)
+
 
 @app.route("/add_sickleave", methods=["POST", "GET"])
 @admin_only
@@ -427,14 +453,19 @@ def add_sickleave():
     form = SickLeaveForm()
 
     if form.validate_on_submit():
-        sick_employee=Employee.query.filter_by(name=form.name.data).first()
+        sick_employee = Employee.query.filter_by(name=form.name.data).first()
         if not sick_employee:
             flash('Nie znaleziono podanego pracownika w bazie. Sprawdź pisownię.')
         else:
-            new_sickleave=SickLeave(person_id=sick_employee.id, issue_date=request.form["issue_date"], start_date=request.form["start_date"], end_date=request.form["end_date"], doc_number=request.form["doc_number"], type=request.form["type"], days=request.form["days"])
-            director=Employee.query.filter_by(position="dyrektor").first()
+            new_sickleave = SickLeave(person_id=sick_employee.id, issue_date=request.form["issue_date"],
+                                      start_date=request.form["start_date"], end_date=request.form["end_date"],
+                                      doc_number=request.form["doc_number"], type=request.form["type"],
+                                      days=request.form["days"])
+            director = Employee.query.filter_by(position="dyrektor").first()
             try:
-                msg = Message(f"chorobowe {sick_employee.name}, ({request.form['start_date']}- {request.form['end_date']})", sender='treflina@yahoo.com', recipients=[director.email])
+                msg = Message(
+                    f"chorobowe {sick_employee.name}, ({request.form['start_date']}- {request.form['end_date']})",
+                    sender='treflina@yahoo.com', recipients=[director.email])
                 msg.body = f"Pani Dyrektor,\r\n {sick_employee.name} przebywa na zwolnieniu lekarskim ({request.form['type']}) w dniach {request.form['start_date']} - {request.form['end_date']}.\r\n \r\nWiadomość wygenerowana automatycznie."
                 mail.send(msg)
             except:
@@ -477,20 +508,20 @@ def edit_employee(employee_id):
     if form.validate_on_submit():
         employee.name = form.name.data
         employee.login = form.login.data
-        employee.email=form.email.data
+        employee.email = form.email.data
         employee.position = form.position.data
-        employee.position_info=form.position_info.data
-        employee.work_place=form.work_place.data
+        employee.position_info = form.position_info.data
+        employee.work_place = form.work_place.data
         employee.work_time = form.work_time.data
         employee.days_off = form.days_off.data
-        employee.annual_days_off=form.annual_days_off.data
+        employee.annual_days_off = form.annual_days_off.data
         employee.is_manager = form.is_manager.data
-        employee.is_topmanager=form.is_topmanager.data
-        if form.position.data!="dyrektor":
+        employee.is_topmanager = form.is_topmanager.data
+        if form.position.data != "dyrektor":
             employee_to_relate = Employee.query.get(request.form["manager"])
             employee.manager_id = employee_to_relate.id
         employee.contract_end = form.contract_end.data
-        employee.additional_info=form.additional_info.data
+        employee.additional_info = form.additional_info.data
         db.session.commit()
         all_employees = db.session.query(Employee).all()
         return redirect(url_for("admin_site", all_employees=all_employees))
@@ -507,11 +538,67 @@ def delete_employee(employee_id):
     return redirect(url_for('admin_site'))
 
 
+@app.route("/report", methods=["POST", "GET"])
+@admin_only
+def report():
+    form = ReportForm()
+    form.person.choices = [(g.id, g.name) for g in Employee.query.order_by('name').all()]
+    if request.method=="POST":
+        person = Employee.query.get(request.form["person"])
+        name=person.name
+        position=person.position
+        type = form.type.data
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        pdf_buffer = BytesIO()
+
+        urlop_data=[["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "Od", "Do", "Status", "Przez:"]]
+        other_data=[["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "W dniu","Rodzaj", "Za pracę dnia", "Status", "Przez:"]]
+
+        if type == "urlop wypoczynkowy":
+            x=1
+            requests_data = db.session.query(Request).filter((Request.type == 'W')).filter(
+                (Request.author_id == person.id)).filter((Request.start_date >= start_date)).filter(
+                (Request.start_date <= end_date)).filter((Request.status == "zaakceptowany")|(Request.status == "odrzucony")).order_by(desc(Request.send_date)).all()
+            for item in requests_data:
+                data = [x, item.send_date, item.author.name, item.author.position, item.start_date,
+                                    item.end_date, item.status, item.signed_by]
+                urlop_data.append(data)
+                x = x + 1
+
+            create_pdf(urlop_data, pdf_buffer, type, start_date, end_date, name, position )
+            pdf_buffer.seek(0)
+            return send_file(pdf_buffer, as_attachment=True, mimetype='application/pdf',
+                             attachment_filename=f'wykaz urlopów {person.name}.pdf', cache_timeout=0)
+        else:
+            x = 1
+            requests_data = db.session.query(Request).filter((Request.type != 'W')).filter(
+                (Request.author_id == person.id)).filter((Request.start_date >= start_date)).filter(
+                (Request.start_date <= end_date)).filter(
+                (Request.status == "zaakceptowany") | (Request.status == "odrzucony")).order_by(
+                desc(Request.send_date)).all()
+            for item in requests_data:
+                data = [x, item.send_date, item.author.name, item.author.position, item.start_date, item.type,
+                        item.work_date, item.status, item.signed_by]
+                other_data.append(data)
+                x = x + 1
+
+            create_pdf(other_data, pdf_buffer, type, start_date, end_date, name, position)
+            pdf_buffer.seek(0)
+            return send_file(pdf_buffer, as_attachment=True, mimetype='application/pdf',
+                             attachment_filename=f'wykaz dni wolnych {person.name}.pdf', cache_timeout=0)
+
+        return redirect(url_for("report"))
+
+    return render_template("report.html", form=form)
+
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 
 admin.add_view(MyModelView(Employee, db.session))
 admin.add_view(MyModelView(Request, db.session))
