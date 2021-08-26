@@ -555,7 +555,7 @@ def report():
         urlop_data=[["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "Od", "Do", "Status", "Przez:"]]
         other_data=[["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "W dniu","Rodzaj", "Za pracę dnia", "Status", "Przez:"]]
 
-        if type == "urlop wypoczynkowy":
+        if type == "o urlop wypoczynkowy":
             x=1
             requests_data = db.session.query(Request).filter((Request.type == 'W')).filter(
                 (Request.author_id == person.id)).filter((Request.start_date >= start_date)).filter(
