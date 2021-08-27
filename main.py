@@ -334,7 +334,7 @@ def send_request():
             work_date = ""
         else:
             work_date = request.form["workdate"]
-        if not request.form["days_count"] or request.form["days_count"] < 1:
+        if not int(request.form["days_count"]) or int(request.form["days_count"]) < 1:
             days = 0
         else:
             days = request.form["days_count"]
