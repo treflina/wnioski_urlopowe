@@ -11,10 +11,7 @@ from io import BytesIO
 
 
 stylesheet = getSampleStyleSheet()
-
-
 pdfmetrics.registerFont(TTFont('TNR', 'static/signikan.ttf'))
-
 
 
 def create_pdf(data, fileName, type, start_date, end_date, person, position):\

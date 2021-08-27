@@ -131,6 +131,7 @@
                  <tbody id="myTable3">
             {% for request in employees_requests_holiday %}
             {% if request.author.name != current_user.name %}
+            {% if request.author.manager_id==current_user.id %}
             <tr>
 
                 <td>{{request.send_date}}</td>
@@ -152,6 +153,7 @@
                  <td>przez {{request.signed_by}}</td>
                 {% endif %}
             </tr>
+            {% endif%}
             {% endif%}
             {% endfor %}
             </tbody>
@@ -223,6 +225,7 @@
              <tbody id="myTable4">
             {% for request in employees_requests_others %}
             {% if request.author.name != current_user.name %}
+            {% if request.author.manager_id==current_user.id %}
             <tr>
 
                 <td class="search">{{request.send_date}}</td>
@@ -245,6 +248,7 @@
                 <td>przez {{request.signed_by}}</td>
                 {% endif %}
             </tr>
+            {%endif%}
             {%endif%}
             {% endfor %}
             </tbody>
