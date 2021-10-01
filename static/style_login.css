@@ -83,11 +83,6 @@ i.fa, i.fas {
   width: 50px;
 }
 
-a {
-  color: #eee;
-  text-decoration: none;
-}
-
 button {
   border-radius: 6px;
   background-color: #343a40;
@@ -96,7 +91,7 @@ button {
   padding: 8px 16px;
 }
 
-button:hover, a:hover {
+button:hover {
   background-color: #dedfdb;
   color: #343a40;
   font-weight: 600;
@@ -119,7 +114,7 @@ button:hover, a:hover {
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
-  margin-right: 10px;
+
 }
 
 @media (max-width: 600px) {

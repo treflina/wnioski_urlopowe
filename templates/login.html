@@ -27,7 +27,7 @@
             <p><i class="fas fa-user"></i><input type="text" name="login"  placeholder="Nazwa użytkownika" required></p>
             <p><i class="fa fa-lock"></i><input type="password"  name="password" placeholder="Hasło" required></p>
             <div class="buttons">
-                <button> <a href="{{url_for('change_password')}}">Zmień hasło</a></button>
+               <button onclick="window.location.href='/change_password'">Zmień hasło</button>
                 <button type="submit">Zaloguj się</button>
             </div>
             </form>
