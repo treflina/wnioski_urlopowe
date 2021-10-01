@@ -1,12 +1,10 @@
 {% include 'header.html' %}
 <section class="page-section">
-        <div class=" wnioski">
+        <div class="requests">
         <h4>Twoje wnioski urlopowe</h4>
-
         <table class="table js-serial table-responsive">
             <thead>
             <tr>
-
                 <th scope="col">Data złożenia</th>
                 <th scope="col">Nazwisko i imię</th>
                 <th scope="col">Stanowisko</th>
@@ -26,7 +24,6 @@
                 <td>{{request.author.position}}</td>
                 <td>{{request.start_date}}</td>
                 <td>{{request.end_date}}</td>
-
                 <td class="text-center">{{ request.days}}</td>
                 <td>{{request.substitute}}</td>
                 <td>{{request.status}}</td>
@@ -46,9 +43,8 @@
     </div>
     </section>
 <section class="page-section">
-    <div class="wnioski">
+    <div class="requests">
         <h4 class="mt-4">Twoje wnioski o dni wolne za pracę w soboty/niedziele/święta</h4>
-
         <table class="table js-serial table-responsive">
             <thead>
             <tr>

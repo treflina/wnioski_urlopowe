@@ -1,3 +1,4 @@
+//Datepicker
 $(function() {
 $('.input-daterange').datepicker({
     format: "dd/mm/yy",
@@ -8,11 +9,9 @@ $('.input-daterange').datepicker({
     todayHighlight: true
     });
 
-    $('.input-daterange').on('apply.datepicker', function(ev, picker) {
-        // picker.startDate and picker.endDate are already Moment.js objects.
-        // You can use diff() method to calculate the day difference.
-        $('#numberdays').val(picker.endDate.diff(picker.startDate, "days"));
-    });
+//    $('.input-daterange').on('apply.datepicker', function(ev, picker) {
+//        $('#numberdays').val(picker.endDate.diff(picker.startDate, "days"));
+//    });
 });
 
 $('.datepicker').datepicker({
@@ -24,6 +23,7 @@ $('.datepicker').datepicker({
     todayHighlight: true,
 });
 
+//Numbering automatically rows in tables
 function addRowCount(tableAttr) {
   $(tableAttr).each(function(){
     $('th:first-child, thead td:first-child', this).each(function(){
@@ -35,16 +35,13 @@ function addRowCount(tableAttr) {
     });
   });
 }
-
-// Call the function with table attr on which you want automatic serial number
 addRowCount('.js-serial');
 
-
+//Requests options
 $('input[type="radio"]').click(function(){
      if($(this).attr("value")=="W"){
             $(".Box").show('slow');
            $(".Box2").hide('slow');
-
         }
         if($(this).attr("value")=="WS"){
             $(".Box").hide('slow');
@@ -58,10 +55,10 @@ $('input[type="radio"]').click(function(){
             $(".Box").hide('slow');
             $(".Box2").hide('slow');
         }
-
     });
 $('input[type="radio"]').trigger('click');
 
+//Tables search
 $(document).ready(function(){
   $("#myInput1").on("keyup", function() {
     var value = $(this).val().toLowerCase();
@@ -86,7 +83,3 @@ $(document).ready(function(){
   });
 });
 
-//$("#wnioski_table td:contains('None')").text("");
-//$("#wnioski_table td").text(function () {
-//    return $(this).text().replace("None", " ");
-//});

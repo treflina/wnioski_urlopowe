@@ -1,50 +1,43 @@
-{% include 'base.html' %}
-<div class="main">
-        <div class="container_middle">
-<center>
-<div class="middle">
-      <div id="login">
-<form action="/change_password" method=post
-      oninput='up2.setCustomValidity(up2.value != up.value ? "Nowe hasło zostało nieprawidłowo powtórzone" : "")'>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wnioski urlopowe</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style_login.css">
+    <script src="https://kit.fontawesome.com/455e063248.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header><p>Wnioski urlopowe 1.0</p></header>
+    <main>
+        <div class="login">
+            <form action="/change_password" method=post
+            oninput='up2.setCustomValidity(up2.value != up.value ? "Nowe hasło zostało nieprawidłowo powtórzone" : "")'>
 
-          <fieldset class="clearfix">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        {% for message in messages %}
-        <p class="text-danger">{{ message }}</p>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-            <p ><span class="fa fa-user"></span><input type="text"  Placeholder="Nazwa użytkownika" required name="login"></p> <!-- JS because of IE support; better: placeholder="Username" -->
-            <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Dotychczasowe hasło" required name=old_password></p>
-            <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Nowe hasło" required name=up></p> <!-- JS because of IE support; better: placeholder="Password" -->
-            <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Powtórz nowe hasło" required name=up2></p>
-             <div>
-            <button class="btn btn-dark" type="submit">Zmień hasło</button></span>
-             </div>
-
-              </fieldset>
-<div class="clearfix"></div>
-</form>
-
-        <div class="clearfix"></div>
-
-      </div> <!-- end login -->
-      <div class="logo"><img src="static/mbp_logo.png">
-
-          <div class="clearfix"></div>
-      </div>
-
-      </div>
-</center>
-    </div>
-
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+              {% with messages = get_flashed_messages() %}
+              {% if messages %}
+              {% for message in messages %}
+              <p class="text-danger">{{ message }}</p>
+              {% endfor %}
+              {% endif %}
+              {% endwith %}
+                <p><i class="fa fa-user"></i><input type="text"  placeholder="Nazwa użytkownika" required name="login"></p>
+                <p><i class="fa fa-lock"></i><input type="password"  placeholder="Dotychczasowe hasło" required name=old_password></p>
+                <p><i class="fa fa-lock"></i><input type="password"  Placeholder="Nowe hasło" required name=up></p>
+                <p><i class="fa fa-lock"></i><input type="password"  Placeholder="Powtórz nowe hasło" required name=up2></p>
+                <div class="btn-register">
+                    <button type="submit">Zmień hasło</button>
+                </div>
+            </form>
+        </div>
+        <div class="logo">
+            <img src="../static/mbp_logo.png">
+        </div>
+    </main>
 </body>
 </html>
