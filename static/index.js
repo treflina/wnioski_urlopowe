@@ -74,21 +74,51 @@ $(document).ready(function(){
     $("#myTable1 tr").filter(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
-    $("#myTable3 tr").filter(function() {
+    $("#myTable3 tr td").filter(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
   });
 });
 
-$(document).ready(function(){
-  $("#myInput2").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#myTable2 tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-        $("#myTable4 tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
+function search() {
+
+  const input = document.getElementById("myInput");
+  const filter = input.value.toUpperCase();
+  const table = document.querySelector(".myTable");
+  const tr = table.getElementsByTagName("tr");
+  let td, txtValue;
+
+  for (let i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+function search2() {
+
+  const input = document.getElementById("myInput2");
+  const filter = input.value.toUpperCase();
+  const table = document.querySelector(".myTable2");
+  const tr = table.getElementsByTagName("tr");
+  let td, txtValue;
+
+  for (let i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
 

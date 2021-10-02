@@ -6,7 +6,7 @@
     <div class="requests" >
         <div>
             <h4 class="table-title">Wnioski urlopowe pracowników</h4>
-            <input class="form-control search" id="myInput1" type="text" placeholder="Wyszukaj...">
+            <input class="form-control search" id="myInput" type="text" onkeyup="search()" placeholder="Wyszukaj pracownika...">
         </div>
         <table class="table js-serial table-responsive">
             <thead>
@@ -23,7 +23,7 @@
                 <th scope="col"></th>
             </tr>
             </thead>
-            <tbody id="myTable1">
+            <tbody class="myTable" id="myTable1">
             {% for request in employees_requests_holiday %}
             <tr>
 
@@ -58,7 +58,7 @@
     <div class="requests" >
         <div>
             <h4 class="table-title">Wnioski pracowników o dni wolne za pracę w soboty/niedziele, inne</h4>
-            <input class="form-control search" id="myInput2" type="text" placeholder="Wyszukaj...">
+            <input class="form-control search" id="myInput2" type="text" onkeyup="search2()" placeholder="Wyszukaj...">
         </div>
         <table class="table js-serial table-responsive">
             <thead>
@@ -76,7 +76,7 @@
                 <th scope="col"></th>
             </tr>
             </thead>
-            <tbody id="myTable2">
+            <tbody class="myTable2" id="myTable2">
             {% for request in employees_requests_others %}
 
             <tr>
