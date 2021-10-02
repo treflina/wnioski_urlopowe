@@ -1,7 +1,8 @@
 {% include 'header.html' %}
 <section class="page-section">
     <div class="container">
-        <h3 >Zwolnienia lekarskie <a href="{{url_for('add_sickleave')}}" role="button" class="btn ml-3 btn-sm btn-info">Dodaj zwolnienie lekarskie</a></h3>
+        <div>
+        <h3 class="table-title">Zwolnienia lekarskie <a href="{{url_for('add_sickleave')}}" role="button" class="btn ml-3 btn-sm btn-info">Dodaj zwolnienie lekarskie</a></h3>
              {% with messages = get_flashed_messages() %}
         {% if messages %}
         {% for message in messages %}
@@ -9,8 +10,8 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <div class="row">
-            <input class="form-control col search1" id="myInput1" type="text" placeholder="Wyszukaj...">
+
+            <input class="form-control search1" id="myInput1" type="text" placeholder="Wyszukaj...">
         </div>
         <table class="table js-serial table-responsive empl_table" id="present">
             <thead>

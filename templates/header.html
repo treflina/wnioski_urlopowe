@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="./static/style.css" >
 </head>
 <body>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark">
-
+    <nav class="navbar position-sticky top-0 navbar-expand-lg navbar-dark w-100">
+<div class="container-fluid">
         <a href="{{url_for('main')}}" class="navbar-brand ml-1" id="nav_urlop"><img src="/static/mbp_logo.png" class="d-inline-block align-center"  style="padding-right: 15px;"></a><p class="info"> {%if current_user.is_authenticated%} Zostało Ci {{current_user.days_off}} {% if current_user.work_time<1 %}godz. {%else%} dni  {%endif%}urlopu <span class="palm">🌴</span> {%endif%}</p>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -27,10 +27,10 @@
         <ul class="navbar-nav ml-auto">
             {% if current_user.position != "dyrektor"%}
                  <li class="nav-item">
-                <a class="nav-link " href="{{url_for('main')}}">Złóż wniosek</a>
+                <a class="nav-link link-hide" href="{{url_for('main')}}">Złóż wniosek</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="{{url_for('my_requests')}}">Twoje wnioski</a>
+                <a class="nav-link link-hide" href="{{url_for('my_requests')}}">Twoje wnioski</a>
             </li>
             {% endif %}
             {% if current_user.is_manager == "TAK" %}
@@ -56,18 +56,18 @@
           </span>
       </a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="employees_requests#to_accept">Do zaopiniowania</a>
-        <a class="dropdown-item" href="employees_requests#holiday">Wnioski urlopowe</a>
-        <a class="dropdown-item" href="employees_requests#saturday">Wolne za soboty</a>
+        <a class="dropdown-item link-hide" href="employees_requests#to_accept">Do zaopiniowania</a>
+        <a class="dropdown-item link-hide" href="employees_requests#holiday">Wnioski urlopowe</a>
+        <a class="dropdown-item link-hide" href="employees_requests#saturday">Wolne za soboty</a>
       </div>
     </li>
 {% endif %}
             {% if current_user.position == "dyrektor" %}
             <li class="nav-item">
-                <a class="nav-link " href="{{url_for('sickleaves')}}">Zwolnienia lekarskie</a>
+                <a class="nav-link link-hide" href="{{url_for('sickleaves')}}">Zwolnienia lekarskie</a>
             </li>
                <li class="nav-item">
-                <a class="nav-link " href="{{url_for('employees_list')}}">Lista pracowników</a>
+                <a class="nav-link link-hide" href="{{url_for('employees_list')}}">Lista pracowników</a>
             </li>
            {% endif %}
             {% if current_user.login in ["wynik", "kostek"] %}
@@ -75,19 +75,21 @@
       <a class="nav-link dropdown-toggle" href="{{url_for('admin_site')}}" id="navbardrop2" data-toggle="dropdown">
         Admin</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="{{url_for('admin_site')}}">Pracownicy: dodaj/zmień</a>
-        <a class="dropdown-item" href="{{url_for('requests_all')}}">Wnioski pracowników</a>
-        <a class="dropdown-item" href="{{url_for('report')}}">Generuj raport</a>
-        <a class="dropdown-item" href="{{url_for('employees_list')}}">Lista dyrektora</a>
-        <a class="dropdown-item" href="{{url_for('sickleaves')}}">Zwolnienia lekarskie</a>
+        <a class="dropdown-item link-hide" href="{{url_for('admin_site')}}">Pracownicy: dodaj/zmień</a>
+        <a class="dropdown-item link-hide" href="{{url_for('requests_all')}}">Wnioski pracowników</a>
+        <a class="dropdown-item link-hide" href="{{url_for('report')}}">Generuj raport</a>
+        <a class="dropdown-item link-hide" href="{{url_for('employees_list')}}">Lista dyrektora</a>
+        <a class="dropdown-item link-hide" href="{{url_for('sickleaves')}}">Zwolnienia lekarskie</a>
       </div>
     </li>
            {% endif %}
             <li class="nav-item">
-                <a class="nav-link " href="{{url_for('logout')}}">Wyloguj się</a>
+                <a class="nav-link link-hide" href="{{url_for('logout')}}">Wyloguj się</a>
             </li>
         </ul>
         </div>
+    </div>
     </nav>
+
 
 

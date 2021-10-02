@@ -1,17 +1,14 @@
 {% include 'header.html' %}
 
-
+<main>
 <section class="page-section" id="to_accept" >
-      <br>
-    <br>
-    <br>
-<div class="requests" >
 
-<h4 >Wnioski otrzymane do zaopiniowania</h4>
+<div class="requests">
+    <h4 class="table-title">Wnioski otrzymane do zaopiniowania</h4>
+    <div class="main-table">
         <table class="table js-serial table-responsive" id="wnioski_table">
             <thead>
             <tr>
-
                 <th scope="col">Data złożenia</th>
                 <th scope="col">Nazwisko i imię</th>
                 <th class="text-center" scope="col">Od</th>
@@ -25,11 +22,9 @@
             </tr>
             </thead>
             <tbody >
-
             {% for request in employees_requests_received %}
 
             <tr>
-
                 <td>{{request.send_date}}</td>
                 <td>{{request.author.name}} {{request.author.position_info}}</td>
                 <td>{{request.start_date}}</td>
@@ -51,43 +46,33 @@
                  <td>przez {{request.signed_by}}</td>
                 {% endif %}
             </tr>
-
             {% endfor %}
-
-
-
             </tbody>
         </table>
+        </div>
 {% if request_list==0 %}
 
     <p style="margin: 3% 0%">Brak wniosków otrzymanych do zaopiniowania.</p>
 
 {% endif %}
 
-
-        <span class="text-danger">*</span> Liczba godzin w przypadku osób zatrudnionych w niepełnym wymiarze czasu pracy.
+    <div><span class="text-danger">*</span> Liczba godzin w przypadku osób zatrudnionych w niepełnym wymiarze czasu pracy.
     <br>
      <span class="text-danger">**</span> W - urlop wypoczynkowy, WS/WN - wolne za pracę w sobotę/niedzielę, DW - wolne za święto przypadające w sobotę
     </div>
 </div>
-</div>
-
 </section>
 
-
 <section class="page-section" id="holiday">
-    <br>
-    <br>
     <div class="requests" >
-<br>
-        <h4 >Wnioski urlopowe pracowników</h4>
-        <div class="row">
-    <input class="form-control col search" id="myInput1" type="text" placeholder="Wyszukaj...">
+        <div>
+        <h4 class="table-title">Wnioski urlopowe pracowników</h4>
+    <input class="form-control search" id="myInput1" type="text" placeholder="Wyszukaj...">
             </div>
+        <div class="main-table">
         <table class="table js-serial table-responsive ">
             <thead>
             <tr>
-
                 <th scope="col">Data złożenia</th>
                 <th scope="col">Nazwisko i imię</th>
                 <th scope="col">Stanowisko</th>
@@ -159,22 +144,20 @@
             </tbody>
             {%endif%}
         </table>
-        <span class="text-danger">*</span> Liczba godzin w przypadku osób zatrudnionych w niepełnym wymiarze czasu pracy.
+            </div>
+        <div><span class="text-danger">*</span> Liczba godzin w przypadku osób zatrudnionych w niepełnym wymiarze czasu pracy.
     </div>
-</div>
-</div>
-
+        </div>
     </section>
 
 <section class="page-section" id="saturday">
-    <br>
-    <br>
     <div class="requests" >
+        <div>
+        <h4 class="table-title">Wnioski pracowników o dni wolne za pracę w soboty/niedziele, inne</h4>
 
-        <h4 >Wnioski pracowników o dni wolne za pracę w soboty/niedziele, inne</h4>
-        <div class="row">
-<input class="form-control col search" id="myInput2" type="text" placeholder="Wyszukaj...">
+<input class="form-control search" id="myInput2" type="text" placeholder="Wyszukaj...">
         </div>
+        <div class="main-table">
         <table class="table js-serial table-responsive">
             <thead>
             <tr>
@@ -254,7 +237,9 @@
             </tbody>
             {%endif%}
         </table>
+            </div>
     </div>
 </div>
     </section>
+    </main>
 {% include 'footer.html' %}

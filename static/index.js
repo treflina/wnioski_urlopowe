@@ -1,3 +1,12 @@
+//Hide navbar links
+document.addEventListener('DOMContentLoaded', function () {
+
+    const navCollapse = document.querySelector('.navbar-collapse')
+    const allNavLinks = document.querySelectorAll('.link-hide')
+
+    allNavLinks.forEach(item => item.addEventListener("click", () => navCollapse.classList.remove('show')))
+    })
+
 //Datepicker
 $(function() {
 $('.input-daterange').datepicker({
