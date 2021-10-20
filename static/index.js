@@ -25,7 +25,16 @@ document.addEventListener('DOMContentLoaded', function () {
         box_ws.classList.add("hide");
         box_w.classList.add("hide");
     }
-
+    if(ws.checked==true||wn.checked==true){
+        box_w.classList.add("hide");
+        box_ws.classList.remove("hide");
+    } else if(w.checked==true) {
+        box_ws.classList.add("hide");
+        box_w.classList.remove("hide");
+    } else if (dw.checked==true) {
+        box_ws.classList.add("hide");
+        box_w.classList.add("hide");
+    }
     allNavLinks.forEach(item => item.addEventListener("click", () => navCollapse.classList.remove('show')));
     w.addEventListener("change", hide_w);
     ws.addEventListener("change", hide_ws);

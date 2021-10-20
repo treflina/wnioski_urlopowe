@@ -33,25 +33,24 @@
             <p class="font-weight-bold">Proszę o:</p>
         </div>
         <div class="form-check">
-            <input class="form-check-input active" type="radio" name="type" id="W" value="W"
-                   checked>
+            <input class="form-check-input active" type="radio" name="type" id="W" value="W" {{"checked" if type == "W" else ""}}>
             <label class="form-check-label" for="W"> Urlop wypoczynkowy (W) </label>
         </div>
         <div class="form-check">
             <div class="row">
                 <div class="col">
                     <input class="form-check-input" type="radio" name="type" id="WS"
-                           value="WS">
+                           value="WS" {{"checked" if type == "WS" else ""}}>
                     <label class="form-check-label" for="WS"> Wolne za pracę w wolną sobotę (WS)<span class="text-danger">*</span> </label>
                 </div>
             </div>
         </div>
         <div class="form-check ">
-            <input class="form-check-input" type="radio" name="type" id="WN" value="WN">
+            <input class="form-check-input" type="radio" name="type" id="WN" value="WN"  {{"checked" if type == "WN" else ""}}>
             <label class="form-check-label" for="WN"> Wolne za pracę w niedzielę/święto (WN)<span class="text-danger">*</span> </label>
         </div>
         <div class="form-check ">
-            <input class="form-check-input" type="radio" name="type" id="DW" value="DW">
+            <input class="form-check-input" type="radio" name="type" id="DW" value="DW" {{"checked" if type == "DW" else ""}}>
             <label class="form-check-label " for="DW"> Wolne za święto przypadające w wolną sobotę
                 (DW) </label>
         </div>

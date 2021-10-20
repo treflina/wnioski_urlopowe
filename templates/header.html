@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="./static/style.css" >
 </head>
 <body>
-    <nav class="navbar position-sticky top-0 navbar-expand-lg navbar-dark w-100">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark w-100">
 <div class="container-fluid">
         <a href="{{url_for('main')}}" class="navbar-brand ml-1" id="nav_urlop"><img src="/static/mbp_logo.png" class="d-inline-block align-center"  style="padding-right: 15px;"></a><p class="info"> {%if current_user.is_authenticated%} Zostało Ci {{current_user.days_off}} {% if current_user.work_time<1 %}godz. {%else%} dni  {%endif%}urlopu <span class="palm">🌴</span> {%endif%}</p>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
