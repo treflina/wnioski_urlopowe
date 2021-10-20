@@ -1,11 +1,38 @@
-//Hide navbar links
+//Hide navbar links, hide unnecessary fields in request form
 document.addEventListener('DOMContentLoaded', function () {
 
     const navCollapse = document.querySelector('.navbar-collapse')
     const allNavLinks = document.querySelectorAll('.link-hide')
 
-    allNavLinks.forEach(item => item.addEventListener("click", () => navCollapse.classList.remove('show')))
+    const w = document.querySelector("#W");
+    const ws = document.querySelector("#WS");
+    const wn = document.querySelector("#WN");
+    const dw = document.querySelector("#DW");
+    const box_w = document.querySelector(".box_w");
+    const box_ws = document.querySelector(".box_ws");
+
+    const hide_ws = function() {
+        box_w.classList.add("hide");
+        box_ws.classList.remove("hide");
+    }
+
+    const hide_w = function() {
+        box_ws.classList.add("hide");
+        box_w.classList.remove("hide");
+    }
+
+    const hide_all = () => {
+        box_ws.classList.add("hide");
+        box_w.classList.add("hide");
+    }
+
+    allNavLinks.forEach(item => item.addEventListener("click", () => navCollapse.classList.remove('show')));
+    w.addEventListener("change", hide_w);
+    ws.addEventListener("change", hide_ws);
+    wn.addEventListener("change", hide_ws);
+    dw.addEventListener("change", hide_all);
     })
+
 
 //Datepicker
 $(function() {
@@ -46,26 +73,6 @@ function addRowCount(tableAttr) {
 }
 addRowCount('.js-serial');
 
-//Requests options
-$('input[type="radio"]').click(function(){
-     if($(this).attr("value")=="W"){
-            $(".Box").show('slow');
-           $(".Box2").hide('slow');
-        }
-        if($(this).attr("value")=="WS"){
-            $(".Box").hide('slow');
-            $(".Box2").show('slow');
-        }
-        if($(this).attr("value")=="WN"){
-            $(".Box").hide('slow');
-            $(".Box2").show('slow');
-        }
-           if($(this).attr("value")=="DW"){
-            $(".Box").hide('slow');
-            $(".Box2").hide('slow');
-        }
-    });
-$('input[type="radio"]').trigger('click');
 
 //Tables search
 $(document).ready(function(){

@@ -1,6 +1,12 @@
 {% include 'header.html' %}
 
+
 <div class="container p-3">
+    {% if error_statement %}
+    <div class="alert alert-warning mt-3" role="alert">
+        {{ error_statement }}
+    </div>
+    {% endif %}
 
     <h3 class="mt-5 mb-5"> Wniosek o udzielenie urlopu/ dnia wolnego</h3>
        {% with messages = get_flashed_messages() %}
@@ -12,15 +18,15 @@
         {% endwith %}
     <form action="{{url_for('send_request')}}", method="POST", autocomplete="off">
         <div class="form-group row">
-            <label for="osoba" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Imię i nazwisko:</label>
+            <label for="person" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Imię i nazwisko:</label>
             <div class="col">
-                <input type="text" readonly class="form-control-plaintext" id="osoba" value="{{name_reverse}}">
+                <input type="text" readonly class="form-control-plaintext" id="person" value="{{name_reverse}}">
             </div>
         </div>
         <div class="form-group row">
-            <label for="stanowisko" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Stanowisko:</label>
+            <label for="position" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Stanowisko:</label>
             <div class="col">
-                <input type="text" readonly class="form-control-plaintext" id="stanowisko" value="{{current_user.position}}">
+                <input type="text" readonly class="form-control-plaintext" id="position" value="{{current_user.position}}">
             </div>
         </div>
         <div>
@@ -28,7 +34,7 @@
         </div>
         <div class="form-check">
             <input class="form-check-input active" type="radio" name="type" id="W" value="W"
-                   checked >
+                   checked>
             <label class="form-check-label" for="W"> Urlop wypoczynkowy (W) </label>
         </div>
         <div class="form-check">
@@ -49,9 +55,9 @@
             <label class="form-check-label " for="DW"> Wolne za święto przypadające w wolną sobotę
                 (DW) </label>
         </div>
-        <div class="form-group row Box2">
+        <div class="form-group row box_ws hide">
             <!-- Date input -->
-            <label class="col-lg-5 col-form-label ">* Praca w sobotę/niedzielę/święto miała miejsce w dniu:</label>
+            <label class="col-lg-5 col-form-label">* Praca w sobotę/niedzielę/święto miała miejsce w dniu:</label>
 
             <input type="text" class="datepicker col-lg-2 input-sm mr-2 ml-2 form-control text-center" name="workdate" />
 
@@ -60,15 +66,15 @@
             <!-- Date input -->
             <label class="col-lg-2 col-form-label font-weight-bold">W okresie:</label>
             <div class="input-daterange input-group col-lg-6 " id="datepicker">
-                <input type="text" class="input-sm form-control mr-2" name="startdate"/>
+                <input type="text" class="input-sm form-control mr-2" name="startdate" value="{{ start_date }}" required/>
                 <span class="input-group-addon">do</span>
-                <input type="text" class="input-sm form-control ml-2" name="enddate"/>
+                <input type="text" class="input-sm form-control ml-2" name="enddate" value ="{{ end_date }}"/>
             </div>
         </div>
-        <div class="form-group row Box">
-            <label for="numberdays" class="col-lg-2 col-md-3 col-form-label font-weight-bold">W wymiarze:</label>
+        <div class="form-group row box_w">
+            <label for="number_days" class="col-lg-2 col-md-3 col-form-label font-weight-bold">W wymiarze:</label>
             <div class="col-lg-1 col-md-2 col-sm-2">
-                <input type="text" class="form-control" id="numberdays" name="days_count">
+                <input type="text" class="form-control" id="number_days" name="days_count">
             </div>
             <div class="col">
                 <label class="col-form-label">{% if current_user.work_time<1 %}godzin {%else%}dni roboczych {%endif%}</label>
@@ -76,9 +82,9 @@
         </div>
         {% if current_user.is_manager=="TAK" %}
         <div class="form-group row">
-            <label for="zastepstwo" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Zastępstwo:</label>
+            <label for="substitute" class="col-lg-2 col-md-3 col-form-label font-weight-bold">Zastępstwo:</label>
             <div class="col">
-                <input type="text" class="form-control" id="zastepstwo" name="substitute" value="" placeholder="Proszę wpisać osobę (jeśli dotyczy)">
+                <input type="text" class="form-control" id="substitute" name="substitute" value="" placeholder="Proszę wpisać osobę (jeśli dotyczy)">
             </div>
         </div>
         {% endif %}
@@ -86,7 +92,7 @@
             <label class="col-lg-2 col-md-3 col-form-label font-weight-bold">Wyślij do:</label>
             <div class="col">
                 <select class="custom-select" name="person_to_send">
-                    <option selected>Wybierz</option>
+                    <option value ="wybierz" selected>Wybierz</option>
                     <option value="{{current_user.manager.name}}">Bezpośredni przełożony</option>
                     {% for manager in top_management %}
                     <option value="{{manager.name}}">{{manager.name}}</option>

@@ -325,29 +325,52 @@ def employees_list():
 @app.route("/send_request", methods=["POST", "GET"])
 @login_required
 def send_request():
+    if current_user.is_authenticated:
+        name_split = current_user.name.split(" ")
+        name_reverse = name_split[1] + " " + name_split[0]
+        today = date.today().strftime("%d/%m/%y")
+
     if request.method == "POST":
+        start_date = request.form["startdate"]
+        end_date = request.form["enddate"]
+        type = request.form["type"]
+        top_management = db.session.query(Employee).filter(Employee.is_topmanager == "TAK").all()
+        send_to_person = request.form["person_to_send"]
+        if not start_date:
+            error_statement = 'Proszę podać datę początkową urlopu/dnia wolnego'
+            return render_template("main.html", error_statement=error_statement, name_reverse = name_reverse, type=type, today = today,
+                                   end_date=end_date, send_to_person=send_to_person, top_management=top_management)
+        if send_to_person=="wybierz":
+            error_statement = 'Proszę wybrać osobę do której ma być wysłany wniosek (pole: "Wyślij do:")'
+
+            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type, today=today,
+                                   start_date=start_date, end_date=end_date, top_management=top_management)
+
         try:
             substitute = request.form["substitute"]
         except:
             substitute = ""
-        if request.form["type"] == "W":
+        if request.form["type"] == "W" or request.form["type"] == "DW":
             work_date = ""
         else:
             work_date = request.form["workdate"]
+            if not work_date:
+                error_statement = "Proszę podać datę pracującej soboty (lub niedzieli lub święta)"
+                return render_template("main.html", error_statement = error_statement, name_reverse = name_reverse, top_management=top_management, today= today, start_date=start_date, end_date=end_date, type=type, send_to_person=send_to_person)
         if request.form["days_count"] =='' or int(request.form["days_count"]) < 1:
             days = 0
         else:
             days = request.form["days_count"]
-        new_request = Request(type=request.form["type"],
+        new_request = Request(type=type,
                               author=current_user,
                               work_date=work_date,
-                              start_date=request.form["startdate"],
-                              end_date=request.form["enddate"],
+                              start_date=start_date,
+                              end_date=end_date,
                               substitute=substitute,
                               days=days,
                               status="oczekujący",
                               send_date=date.today().strftime("%d/%m/%y"),
-                              send_to_person=request.form["person_to_send"])
+                              send_to_person=send_to_person)
         if request.form["type"] == "W":
             employee_to_update = Employee.query.get(current_user.id)
             new_days_off_count = employee_to_update.days_off - int(request.form["days_count"])

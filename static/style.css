@@ -70,6 +70,10 @@ input.search, input.search1 {
   font-size: 1.2rem;
 }
 
+.hide {
+  display: none;
+}
+
 @media (max-width: 410px) {
   .palm {
     display: none;
