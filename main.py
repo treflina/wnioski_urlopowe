@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
-from datetime import date
+from datetime import date, datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -336,31 +336,63 @@ def send_request():
         type = request.form["type"]
         top_management = db.session.query(Employee).filter(Employee.is_topmanager == "TAK").all()
         send_to_person = request.form["person_to_send"]
-        if not start_date:
-            error_statement = 'Proszę podać datę początkową urlopu/dnia wolnego'
-            return render_template("main.html", error_statement=error_statement, name_reverse = name_reverse, type=type, today = today,
-                                   end_date=end_date, send_to_person=send_to_person, top_management=top_management)
-        if send_to_person=="wybierz":
-            error_statement = 'Proszę wybrać osobę do której ma być wysłany wniosek (pole: "Wyślij do:")'
-
-            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type, today=today,
-                                   start_date=start_date, end_date=end_date, top_management=top_management)
-
+        if request.form["days_count"] == '' or int(request.form["days_count"]) < 1:
+            days = 0
+        else:
+            days = request.form["days_count"]
         try:
             substitute = request.form["substitute"]
         except:
             substitute = ""
+
         if request.form["type"] == "W" or request.form["type"] == "DW":
             work_date = ""
         else:
             work_date = request.form["workdate"]
             if not work_date:
                 error_statement = "Proszę podać datę pracującej soboty (lub niedzieli lub święta)"
-                return render_template("main.html", error_statement = error_statement, name_reverse = name_reverse, top_management=top_management, today= today, start_date=start_date, end_date=end_date, type=type, send_to_person=send_to_person)
-        if request.form["days_count"] =='' or int(request.form["days_count"]) < 1:
-            days = 0
-        else:
-            days = request.form["days_count"]
+                return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse,
+                                       substitute=substitute, top_management=top_management, today=today,
+                                       start_date=start_date, end_date=end_date, type=type, days=days,
+                                       send_to_person=send_to_person)
+        if not type:
+            error_statement = "Proszę wybrać rodzaj dnia wolnego (W, WS, WN lub DW)"
+            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse,
+                                   substitute=substitute, top_management=top_management, today=today,
+                                   start_date=start_date, end_date=end_date, days=days, work_date =work_date,
+                                   send_to_person=send_to_person)
+
+        if not start_date:
+            error_statement = 'Proszę podać datę początkową urlopu/datę dnia wolnego'
+            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type,
+                                   today=today, end_date=end_date, days=days, substitute=substitute, work_date = work_date,
+                                   send_to_person=send_to_person, top_management=top_management)
+        if not end_date:
+            error_statement = 'Proszę wypełnić pole wyboru daty "do"'
+            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type,
+                                   today=today, start_date=start_date, days=days, substitute=substitute, work_date = work_date,
+                                   send_to_person=send_to_person, top_management=top_management)
+
+        try:
+            datetime.strptime(start_date, "%d/%m/%y")
+            datetime.strptime(end_date, "%d/%m/%y")
+            if work_date != "":
+                datetime.strptime(work_date, "%d/%m/%y")
+
+        except (Exception,):
+            error_statement = 'Proszę podać prawidłowe daty (DD/MM/YY)'
+            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type,
+                                   today=today, start_date=start_date, end_date=end_date, days=days,
+                                   substitute=substitute, send_to_person=send_to_person, top_management=top_management,
+                                   work_date=work_date)
+
+        if send_to_person == "wybierz":
+            error_statement = 'Proszę wybrać osobę do której ma być wysłany wniosek (pole: "Wyślij do:")'
+            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type,
+                                   today=today, start_date=start_date, end_date=end_date, days=days,
+                                   substitute=substitute,
+                                   top_management=top_management, work_date=work_date)
+
         new_request = Request(type=type,
                               author=current_user,
                               work_date=work_date,
@@ -566,30 +598,34 @@ def delete_employee(employee_id):
 def report():
     form = ReportForm()
     form.person.choices = [(g.id, g.name) for g in Employee.query.order_by('name').all()]
-    if request.method=="POST":
+    if request.method == "POST":
         person = Employee.query.get(request.form["person"])
-        name=person.name
-        position=person.position
+        name = person.name
+        position = person.position
         type = form.type.data
         start_date = form.start_date.data
         end_date = form.end_date.data
         pdf_buffer = BytesIO()
 
-        urlop_data=[["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "Od", "Do", "Status", "Przez:"]]
-        other_data=[["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "W dniu","Rodzaj", "Za pracę dnia", "Status", "Przez:"]]
+        urlop_data = [["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "Od", "Do", "Status", "Przez:"]]
+        other_data = [
+            ["Lp.", "Data złożenia", "Nazwisko i imię", "Stanowisko", "W dniu", "Rodzaj", "Za pracę dnia", "Status",
+             "Przez:"]]
 
         if type == "o urlop wypoczynkowy":
-            x=1
+            x = 1
             requests_data = db.session.query(Request).filter((Request.type == 'W')).filter(
                 (Request.author_id == person.id)).filter((Request.start_date >= start_date)).filter(
-                (Request.start_date <= end_date)).filter((Request.status == "zaakceptowany")|(Request.status == "odrzucony")).order_by(desc(Request.send_date)).all()
+                (Request.start_date <= end_date)).filter(
+                (Request.status == "zaakceptowany") | (Request.status == "odrzucony")).order_by(
+                desc(Request.send_date)).all()
             for item in requests_data:
                 data = [x, item.send_date, item.author.name, item.author.position, item.start_date,
-                                    item.end_date, item.status, item.signed_by]
+                        item.end_date, item.status, item.signed_by]
                 urlop_data.append(data)
                 x = x + 1
 
-            create_pdf(urlop_data, pdf_buffer, type, start_date, end_date, name, position )
+            create_pdf(urlop_data, pdf_buffer, type, start_date, end_date, name, position)
             pdf_buffer.seek(0)
             return send_file(pdf_buffer, as_attachment=True, mimetype='application/pdf',
                              attachment_filename=f'wykaz urlopów {person.name}.pdf', cache_timeout=0)
