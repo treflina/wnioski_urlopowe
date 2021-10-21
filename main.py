@@ -306,16 +306,12 @@ def employees_list():
 
         if len(todays) != 0:
             employee.today_note = "C"
-            # for ts in todays:
-            #     temporary_lista=[]
-            #     temporary_lista.append(ts.type)
-            #     employee.today_note = temporary_lista[0]
+            # temporary_lista=[ts.type for ts in todays ]
+            # employee.today_note = temporary_lista[0]
 
         elif len(todayr) != 0:
-            for tr in todayr:
-                temporary_list2 = []
-                temporary_list2.append(tr.type)
-                employee.today_note = temporary_list2[0]
+            temporary_list2 = [tr.type for tr in todayr]
+            employee.today_note = temporary_list2[0]
         else:
             employee.today_note = "✓"
     return render_template("employees_list.html", request_list=request_list, today_sickleaves=today_sickleaves,
@@ -355,22 +351,18 @@ def send_request():
                                        substitute=substitute, top_management=top_management, today=today,
                                        start_date=start_date, end_date=end_date, type=type, days=days,
                                        send_to_person=send_to_person)
-        if not type:
-            error_statement = "Proszę wybrać rodzaj dnia wolnego (W, WS, WN lub DW)"
-            return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse,
-                                   substitute=substitute, top_management=top_management, today=today,
-                                   start_date=start_date, end_date=end_date, days=days, work_date =work_date,
-                                   send_to_person=send_to_person)
 
         if not start_date:
             error_statement = 'Proszę podać datę początkową urlopu/datę dnia wolnego'
             return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type,
-                                   today=today, end_date=end_date, days=days, substitute=substitute, work_date = work_date,
+                                   today=today, end_date=end_date, days=days, substitute=substitute,
+                                   work_date=work_date,
                                    send_to_person=send_to_person, top_management=top_management)
         if not end_date:
             error_statement = 'Proszę wypełnić pole wyboru daty "do"'
             return render_template("main.html", error_statement=error_statement, name_reverse=name_reverse, type=type,
-                                   today=today, start_date=start_date, days=days, substitute=substitute, work_date = work_date,
+                                   today=today, start_date=start_date, days=days, substitute=substitute,
+                                   work_date=work_date,
                                    send_to_person=send_to_person, top_management=top_management)
 
         try:
@@ -646,8 +638,6 @@ def report():
             pdf_buffer.seek(0)
             return send_file(pdf_buffer, as_attachment=True, mimetype='application/pdf',
                              attachment_filename=f'wykaz dni wolnych {person.name}.pdf', cache_timeout=0)
-
-        return redirect(url_for("report"))
 
     return render_template("report.html", form=form)
 

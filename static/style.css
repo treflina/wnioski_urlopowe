@@ -15,13 +15,18 @@
       -ms-flex-pack: center;
           justify-content: center;
   scroll-padding-top: 200px;
-  margin-top: 2rem;
   padding-bottom: 5rem;
 }
 
 .requests {
   position: relative;
+  padding-top: 8rem;
   max-width: 100%;
+}
+
+.all_employees_list {
+    position: relative;
+    max-width: 100%;
 }
 
 .table-title {
